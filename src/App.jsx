@@ -1,9 +1,11 @@
-import { useState } from "react";
+import AgendamentoCliente from "./pages/AgendamentoCliente";
 
 function App() {
-  const [count, setCount] = useState(0);
-
-  return <>olá mundo!</>;
+  return (
+    <>
+      <AgendamentoCliente />
+    </>
+  );
 }
 
 export default App;
