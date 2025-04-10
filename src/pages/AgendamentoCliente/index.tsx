@@ -14,9 +14,19 @@ import {
   Paper,
   Chip,
   TablePagination,
+  useMediaQuery,
+  useTheme,
+  Menu,
+  MenuItem,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { ModalAgendamento } from "./ModalAgendamento";
+import { ModalConfirmarCancelamento } from "./ModalCancelamento";
 
 const statusColors = {
   Pendente: "warning",
@@ -33,13 +43,39 @@ const allRows = Array.from({ length: 25 }, (_, i) => ({
 }));
 
 export default function AgendamentoPage() {
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [page, setPage] = useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(5);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedRow, setSelectedRow] = useState<any>([]);
+  const [openConfirm, setOpenConfirm] = useState(false);
 
-  const handleChangePage = (event, newPage) => setPage(newPage);
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const handleChangePage = (newPage) => setPage(newPage);
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+  };
+
+  const handleMenuClick = (event, row) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedRow(row);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleCancelClick = () => {
+    setOpenConfirm(true);
+    handleMenuClose();
+  };
+
+  const handleConfirmCancel = () => {
+    console.log("Cancelado: ", selectedRow);
+    setOpenConfirm(false);
   };
 
   const paginatedRows = allRows.slice(
@@ -48,7 +84,17 @@ export default function AgendamentoPage() {
   );
 
   return (
-    <Box p={4}>
+    <Box p={isSmallScreen ? 2 : 4}>
+      <ModalAgendamento onClose={() => setModalOpen(false)} open={modalOpen} />
+
+      <ModalConfirmarCancelamento
+        open={openConfirm}
+        onClose={() => setOpenConfirm(false)}
+        onConfirm={handleConfirmCancel}
+        servico={selectedRow.servico}
+        hora={selectedRow.data}
+      />
+
       <Box mb={3}>
         <Typography variant="h4" fontWeight="bold">
           Agendamento
@@ -60,28 +106,45 @@ export default function AgendamentoPage() {
 
       <Box
         display="flex"
+        flexDirection={isSmallScreen ? "column" : "row"}
         justifyContent="space-between"
-        alignItems="center"
+        alignItems={isSmallScreen ? "stretch" : "center"}
+        gap={2}
         mb={3}
       >
-        <Box display="flex" gap={1} alignItems="center">
+        <Box
+          display="flex"
+          alignItems="center"
+          gap={1}
+          flex={1}
+          flexWrap="wrap"
+        >
           <TextField
             size="medium"
             label="Buscar"
             placeholder="Serviço, data..."
             variant="outlined"
+            fullWidth={isSmallScreen}
           />
           <IconButton>
             <FilterListIcon />
           </IconButton>
         </Box>
-        <Button variant="contained" size="large">
-          Novo agendamento
-        </Button>
+
+        <Box mt={isSmallScreen ? 1 : 0}>
+          <Button
+            variant="contained"
+            size="large"
+            fullWidth={isSmallScreen}
+            onClick={() => setModalOpen(true)}
+          >
+            Novo agendamento
+          </Button>
+        </Box>
       </Box>
 
       <TableContainer component={Paper}>
-        <Table>
+        <Table size={isSmallScreen ? "small" : "medium"}>
           <TableHead>
             <TableRow>
               <TableCell>Serviço</TableCell>
@@ -101,7 +164,7 @@ export default function AgendamentoPage() {
                   <Chip label={row.status} color={statusColors[row.status]} />
                 </TableCell>
                 <TableCell align="right">
-                  <IconButton>
+                  <IconButton onClick={(e) => handleMenuClick(e, row)}>
                     <MoreVertIcon />
                   </IconButton>
                 </TableCell>
@@ -113,12 +176,36 @@ export default function AgendamentoPage() {
           component="div"
           count={allRows.length}
           page={page}
-          onPageChange={handleChangePage}
+          onPageChange={(_, newPage) => handleChangePage(newPage)}
           rowsPerPage={rowsPerPage}
           onRowsPerPageChange={handleChangeRowsPerPage}
           labelRowsPerPage="Linhas por página:"
         />
       </TableContainer>
+
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+      >
+        <MenuItem
+          onClick={() => {
+            console.log("Visualizar", selectedRow);
+            handleMenuClose();
+          }}
+        >
+          Visualizar
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            console.log("Editar", selectedRow);
+            handleMenuClose();
+          }}
+        >
+          Editar
+        </MenuItem>
+        <MenuItem onClick={handleCancelClick}>Cancelar agendamento</MenuItem>
+      </Menu>
     </Box>
   );
 }
