@@ -1,0 +1,141 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body,
+html {
+    height: 100%;
+    background-color: #fff;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+.login-form {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+.login-form h1 {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.login-form p {
+    color: #333;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+form {
+    width: 100%;
+    max-width: 320px;
+    display: flex;
+    flex-direction: column;
+}
+
+form label {
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+form input {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #f7fbff;
+    outline: none;
+}
+
+.senha-link {
+    text-align: right;
+    margin-top: 5px;
+    font-size: 12px;
+}
+
+.senha-link a {
+    color: #777;
+    text-decoration: none;
+}
+
+.btn-login {
+    margin-top: 20px;
+    padding: 12px;
+    background-color: #000;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-login:hover {
+    background-color: #222;
+}
+
+.divider {
+    margin: 20px 0;
+    text-align: center;
+    color: #aaa;
+    position: relative;
+}
+
+.divider span {
+    background: #fff;
+    padding: 0 10px;
+}
+
+.btn-social {
+    width: 100%;
+    max-width: 320px;
+    margin-bottom: 10px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    background-color: #f1f8fc;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.btn-social img {
+    width: 22px;
+    height: 22px;
+}
+
+.cadastro {
+    font-size: 14px;
+    color: #555;
+    margin-top: 20px;
+}
+
+.cadastro a {
+    font-weight: bold;
+    color: #000;
+    text-decoration: none;
+}
+
+.logo-side {
+    flex: 1;
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo-side img {
+    max-width: 400px;
+    width: 80%;
+}
