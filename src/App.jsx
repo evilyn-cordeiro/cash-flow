@@ -4,6 +4,7 @@ import {
   AgendamentoPage,
   ControleFinanceiroPage,
   Dashboard,
+  Landing,
   NovoLancamento,
 } from "./pages";
 
@@ -20,6 +21,7 @@ function App() {
           />
           <Route path="/novo-lancamento" element={<NovoLancamento />} />
         </Route>
+        <Route path="/landingpage" element={<Landing />} />
       </Routes>
     </Router>
   );

@@ -1,23 +1,18 @@
 import styled, { keyframes } from "styled-components";
-import { border, shade } from "polished";
-
-
+import { shade } from "polished";
 
 export const Container = styled.div`
   height: 100vh;
   display: flex;
 
-  justify-content: space-between  ;
+  justify-content: space-between;
   gap: 3rem;
   position: relative;
-  background: url(teste}) no-repeat ;
+  background: url("../../assets/landing.jpg") no-repeat;
   background-size: cover;
-  `;
-
-
+`;
 
 export const Content = styled.div`
-
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -36,8 +31,6 @@ const appearFromLeft = keyframes`
   }
 `;
 
-
-
 export const AnimationContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -46,50 +39,47 @@ export const AnimationContainer = styled.div`
   animation: ${appearFromLeft} 1s;
 
   img {
-  width: 800px;
-  margin-bottom: -36rem;
+    width: 800px;
+    margin-bottom: -36rem;
 
-  @media (max-width: 768px) {
-    width: 150px;
-  }
-
-  @media (max-width: 480px) {
-    width: 120px;
-      
-  }
-    
-  form {
-    margin: 80px 0;
-    width: 340px;
-    text-align: center;
-
-    h1 {
-      margin-bottom: 24px;
-    }
-  }
-
-  > a {
-    color: #38ada9;
-    display: block;
-    margin-top: 10px;
-    text-decoration: none;
-    transition: color 0.2s;
-
-    display: flex;
-    align-items: center;
-
-    svg {
-      margin-right: 16px;
+    @media (max-width: 768px) {
+      width: 150px;
     }
 
-    &:hover {
-      color: ${shade(0.2, "#38ada9")};
+    @media (max-width: 480px) {
+      width: 120px;
+    }
+
+    form {
+      margin: 80px 0;
+      width: 340px;
+      text-align: center;
+
+      h1 {
+        margin-bottom: 24px;
+      }
+    }
+
+    > a {
+      color: #38ada9;
+      display: block;
+      margin-top: 10px;
+      text-decoration: none;
+      transition: color 0.2s;
+
+      display: flex;
+      align-items: center;
+
+      svg {
+        margin-right: 16px;
+      }
+
+      &:hover {
+        color: ${shade(0.2, "#38ada9")};
+      }
     }
   }
 `;
-
-
-
 
 export const TextIntro = styled.div`
   width: 55%;
@@ -100,7 +90,7 @@ export const TextIntro = styled.div`
   h1 {
     display: flex;
     justify-content: center; /* Centraliza o conteúdo flexível */
-    color: #FFFFFF;
+    color: #ffffff;
     font-size: 80 px;
     font-weight: 110;
     text-decoration: bold;
@@ -114,12 +104,12 @@ export const TextIntro = styled.div`
   p {
     font-size: 30px;
     width: 500%; /* Ajustando para melhor responsividade */
-    color: #FFFFFF;
+    color: #ffffff;
   }
 
   @media (max-width: 1368px) {
     margin-right: 0; /* Removendo margem lateral */
-    
+
     h1 {
       font-size: 50px;
       width: 100%;
@@ -142,18 +132,16 @@ export const TextIntro = styled.div`
   }
 `;
 
-
 export const ButtonRow = styled.div`
-margin-left: 190%;
+  margin-left: 190%;
 
-h1{
-  padding: 30px 15px 50px;
-}
+  h1 {
+    padding: 30px 15px 50px;
+  }
   width: 10rem;
   display: flex;
   font-size: 1.5rem;
   color: transparent;
-
 `;
 
 export const Backgroud = styled.div`

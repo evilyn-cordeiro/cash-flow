@@ -1,85 +1,86 @@
-import React, { useCallback, useRef, useState } from "react";
-import { Link } from "react-router-dom";
-import { type FormHandles } from "@unform/core";
-import { Form } from "@unform/web";
-import { FiLogIn, FiMail } from "react-icons/fi";
-import { LandingPageGlobalStyle } from "../../styles/global-landing";
-import Navbar from "../../components/Navbar";
-import pedroLogo from "../../assets/pngpedro.png";
-
-import { Input } from "../../components/Input";
-import { Button } from "../../components/ButtonRow";
-import getValidationErrors from "../../util/getValidationErrors";
+import React, { useCallback, useState } from "react";
+import { Button as MuiButton, Box, Typography } from "@mui/material";
+import { Login as LoginIcon, Mail as MailIcon } from "@mui/icons-material";
+import {
+  Container,
+  Content,
+  AnimationContainer,
+  ButtonRow,
+  TextIntro,
+} from "./styles";
 import * as Yup from "yup";
-
-import { Container, Content, AnimationContainer, Backgroud, ButtonRow, TextIntro } from "./styles";
+import getValidationErrors from "../../utils/getValidationErrors";
 
 interface ForgotPasswordFormData {
-    email: string;
+  email: string;
 }
 
 export const Landing: React.FC = () => {
-    const [loading, setLoading] = useState(false);
-    const formRef = useRef<FormHandles>(null);
-    const handleSubmit = useCallback(async (data: ForgotPasswordFormData) => {
-        try {
-            setLoading(true);
+  const [loading, setLoading] = useState(false);
 
-            const schema = Yup.object().shape({
-                email: Yup.string()
-                    .required("E-mail obrigatório")
-                    .email("Digite um e-mail válido"),
-            });
+  const handleSubmit = useCallback(async (data: ForgotPasswordFormData) => {
+    try {
+      setLoading(true);
 
-            await schema.validate(data, {
-                abortEarly: false,
-            });
+      const schema = Yup.object().shape({
+        email: Yup.string()
+          .required("E-mail obrigatório")
+          .email("Digite um e-mail válido"),
+      });
 
-        } catch (err) {
-            if (err instanceof Yup.ValidationError) {
-                const errors = getValidationErrors(err);
+      await schema.validate(data, {
+        abortEarly: false,
+      });
+    } catch (err) {
+      if (err instanceof Yup.ValidationError) {
+        const errors = getValidationErrors(err);
+        return;
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-                formRef.current?.setErrors(errors);
+  return (
+    <Container>
+      <Content>
+        <AnimationContainer>
+          <img src={"../../assets/pngpedro.png"} alt="Pedro Barbeiro Logo" />
+          <TextIntro>
+            <Typography variant="h4" component="h1" gutterBottom>
+              BARBEARIA
+            </Typography>
+            <Typography variant="body1">
+              Agende com facilidade, escolha entre os
+              <br />
+              melhores profissionais, gerencie
+              <br />
+              seus horários e desfrute da <br />
+              conveniência de cuidar do seu visual
+              <br /> com praticidade e eficiência.
+            </Typography>
+          </TextIntro>
 
-                return;
-            }
-
-        } finally {
-            setLoading(false);
-        }
-    }, []);
-
-    return (
-
-        <Container>
-            <Content>
-                <AnimationContainer>
-                    <img src={pedroLogo} alt="Pedro Barbeiro Logo" />
-                    <TextIntro>
-                        <h1>BARBEARIA</h1>
-                        <p>
-                            Agende com facilidade, escolha entre os
-                            <br />
-                            melhores profissionais, gerencie<br />
-                            seus horários e desfrute da <br />
-                            conveniência de cuidar do seu visual<br /> com
-                            praticidade e eficiência.
-                        </p>
-                    </TextIntro>
-
-                    <ButtonRow>
-                        <a href="/signin">
-                            <Button> ENTRAR </Button>
-                        </a>
-                        <h1> | </h1>
-                        <a href="/signup">
-                            <Button> CADASTRAR-SE</Button>
-                        </a>
-                    </ButtonRow>
-                </AnimationContainer>
-            </Content>
-
-            <Backgroud />
-        </Container>
-    );
+          <ButtonRow>
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              gap={2}
+            >
+              <MuiButton variant="contained" color="primary" href="/signin">
+                <LoginIcon style={{ marginRight: 8 }} /> {/* Ícone de login */}
+                ENTRAR
+              </MuiButton>
+              <Typography variant="body1"> | </Typography>
+              <MuiButton variant="contained" color="secondary" href="/signup">
+                <MailIcon style={{ marginRight: 8 }} /> {/* Ícone de email */}
+                CADASTRAR-SE
+              </MuiButton>
+            </Box>
+          </ButtonRow>
+        </AnimationContainer>
+      </Content>
+    </Container>
+  );
 };
