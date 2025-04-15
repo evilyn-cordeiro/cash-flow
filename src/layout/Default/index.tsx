@@ -79,8 +79,6 @@ const Layout = () => {
       >
         {drawerContent}
       </Drawer>
-
-      <Footer />
       <Box
         component="main"
         sx={{
