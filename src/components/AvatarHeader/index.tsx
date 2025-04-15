@@ -1,14 +1,7 @@
 import React from "react";
-import {
-  Avatar,
-  Box,
-  Typography,
-  IconButton,
-  Menu,
-  MenuItem,
-} from "@mui/material";
+import { Avatar, Box, IconButton, Menu, MenuItem } from "@mui/material";
 
-const AvatarHeader = ({ name = "Usuário", role = "Administrador" }) => {
+const AvatarHeader = ({ name = "Usuário" }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
@@ -21,20 +14,6 @@ const AvatarHeader = ({ name = "Usuário", role = "Administrador" }) => {
       <IconButton onClick={handleClick} sx={{ p: 0 }}>
         <Avatar alt={name} />
       </IconButton>
-
-      <Box onClick={handleClick} sx={{ cursor: "pointer" }}>
-        <Typography
-          variant="body1"
-          color="inherit"
-          fontWeight="bold"
-          sx={{ lineHeight: "1rem" }}
-        >
-          {name}
-        </Typography>
-        <Typography variant="caption" color="inherit">
-          {role}
-        </Typography>
-      </Box>
 
       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
         <MenuItem onClick={handleClose}>Perfil</MenuItem>

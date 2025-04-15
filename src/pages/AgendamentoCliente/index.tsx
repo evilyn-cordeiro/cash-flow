@@ -18,13 +18,10 @@ import {
   useTheme,
   Menu,
   MenuItem,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
 } from "@mui/material";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import AddIcon from "@mui/icons-material/Add";
 import { ModalAgendamento } from "./ModalAgendamento";
 import { ModalConfirmarCancelamento } from "./ModalCancelamento";
 
@@ -86,7 +83,6 @@ export default function AgendamentoPage() {
   return (
     <Box p={isSmallScreen ? 2 : 4}>
       <ModalAgendamento onClose={() => setModalOpen(false)} open={modalOpen} />
-
       <ModalConfirmarCancelamento
         open={openConfirm}
         onClose={() => setOpenConfirm(false)}
@@ -112,19 +108,13 @@ export default function AgendamentoPage() {
         gap={2}
         mb={3}
       >
-        <Box
-          display="flex"
-          alignItems="center"
-          gap={1}
-          flex={1}
-          flexWrap="wrap"
-        >
+        <Box display="flex" alignItems="center" gap={1} flex={1}>
           <TextField
             size="medium"
             label="Buscar"
             placeholder="Serviço, data..."
             variant="outlined"
-            fullWidth={isSmallScreen}
+            fullWidth
           />
           <IconButton>
             <FilterListIcon />
@@ -136,9 +126,10 @@ export default function AgendamentoPage() {
             variant="contained"
             size="large"
             fullWidth={isSmallScreen}
+            startIcon={isSmallScreen ? <AddIcon /> : null}
             onClick={() => setModalOpen(true)}
           >
-            Novo agendamento
+            {!isSmallScreen && "Novo Agendamento"}{" "}
           </Button>
         </Box>
       </Box>
@@ -148,8 +139,11 @@ export default function AgendamentoPage() {
           <TableHead>
             <TableRow>
               <TableCell>Serviço</TableCell>
-              <TableCell>Data</TableCell>
-              <TableCell>Localização</TableCell>
+
+              {!isSmallScreen && <TableCell>Data</TableCell>}
+
+              {!isSmallScreen && <TableCell>Localização</TableCell>}
+
               <TableCell>Status</TableCell>
               <TableCell align="right">Ações</TableCell>
             </TableRow>
@@ -158,8 +152,11 @@ export default function AgendamentoPage() {
             {paginatedRows.map((row) => (
               <TableRow key={row.id}>
                 <TableCell>{row.servico}</TableCell>
-                <TableCell>{row.data}</TableCell>
-                <TableCell>{row.localizacao}</TableCell>
+
+                {!isSmallScreen && <TableCell>{row.data}</TableCell>}
+
+                {!isSmallScreen && <TableCell>{row.localizacao}</TableCell>}
+
                 <TableCell>
                   <Chip label={row.status} color={statusColors[row.status]} />
                 </TableCell>
