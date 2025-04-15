@@ -13,7 +13,7 @@ import {
   ListItemText,
   Divider,
 } from "@mui/material";
-import { CalendarMonth, Home } from "@mui/icons-material";
+import { CalendarMonth, Home, MoneyOutlined } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import Header from "../../components/Header";
 
@@ -22,6 +22,11 @@ const drawerWidth = 240;
 const menuItems = [
   { text: "Início", icon: <Home />, path: "/" },
   { text: "Agendamentos", icon: <CalendarMonth />, path: "/agendamento" },
+  {
+    text: "Controle Financeiro",
+    icon: <MoneyOutlined />,
+    path: "/controle-financeiro",
+  },
 ];
 
 const Layout = () => {
@@ -56,8 +61,6 @@ const Layout = () => {
 
   return (
     <Box sx={{ display: "flex" }}>
-      <CssBaseline />
-
       <Header onMenuClick={handleDrawerToggle} />
 
       <Drawer
@@ -82,7 +85,6 @@ const Layout = () => {
         sx={{
           flexGrow: 1,
           p: 3,
-          width: { md: `calc(100% - ${drawerWidth}px)` },
         }}
       >
         <Toolbar />

@@ -1,4 +1,3 @@
-// src/components/Header.jsx
 import React from "react";
 import {
   AppBar,
@@ -17,11 +16,8 @@ const Header = ({ onMenuClick }) => {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   return (
-    <AppBar
-      position="fixed"
-      sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
-    >
-      <Toolbar>
+    <AppBar position="fixed" sx={{ zIndex: 1800 }}>
+      <Toolbar sx={{ paddingX: isMobile ? 1 : 3 }}>
         {isMobile && (
           <IconButton
             edge="start"
@@ -33,11 +29,18 @@ const Header = ({ onMenuClick }) => {
             <MenuIcon />
           </IconButton>
         )}
-        <Typography variant="h6" sx={{ flexGrow: 1, color: "#fff" }}>
+        <Typography
+          variant={isMobile ? "h6" : "h5"}
+          sx={{
+            flexGrow: 1,
+            color: "#fff",
+            fontSize: isMobile ? "1.25rem" : "1.5rem",
+          }}
+        >
           Meu Sistema
         </Typography>
         <Box>
-          <AvatarHeader name="João Silva" role="Administrador" />
+          <AvatarHeader name="João Silva" />
         </Box>
       </Toolbar>
     </AppBar>
