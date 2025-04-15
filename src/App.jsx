@@ -1,8 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import AgendamentoCliente from "./pages/AgendamentoCliente";
 import Layout from "./layout/Default";
-import ControleFinanceiro from "./pages/ControleFinanceiro";
-import Dashboard from "./pages/Dashboard";
+import {
+  AgendamentoPage,
+  ControleFinanceiroPage,
+  Dashboard,
+  NovoLancamento,
+} from "./pages";
 
 function App() {
   return (
@@ -10,8 +13,12 @@ function App() {
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Dashboard />} />
-          <Route path="/agendamento" element={<AgendamentoCliente />} />
-          <Route path="/controle-financeiro" element={<ControleFinanceiro />} />
+          <Route path="/agendamento" element={<AgendamentoPage />} />
+          <Route
+            path="/controle-financeiro"
+            element={<ControleFinanceiroPage />}
+          />
+          <Route path="/novo-lancamento" element={<NovoLancamento />} />
         </Route>
       </Routes>
     </Router>

@@ -3,7 +3,6 @@ import { Outlet } from "react-router-dom";
 import {
   Box,
   Toolbar,
-  CssBaseline,
   Drawer,
   useTheme,
   useMediaQuery,
@@ -16,6 +15,7 @@ import {
 import { CalendarMonth, Home, MoneyOutlined } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import Header from "../../components/Header";
+import Footer from "../../components/Footer";
 
 const drawerWidth = 240;
 
@@ -80,6 +80,7 @@ const Layout = () => {
         {drawerContent}
       </Drawer>
 
+      <Footer />
       <Box
         component="main"
         sx={{

@@ -16,7 +16,7 @@ const Header = ({ onMenuClick }) => {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   return (
-    <AppBar position="fixed" sx={{ zIndex: 1800 }}>
+    <AppBar position="fixed" sx={{ zIndex: 9999 }}>
       <Toolbar sx={{ paddingX: isMobile ? 1 : 3 }}>
         {isMobile && (
           <IconButton

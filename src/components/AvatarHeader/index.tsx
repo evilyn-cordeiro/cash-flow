@@ -12,7 +12,7 @@ const AvatarHeader = ({ name = "Usuário" }) => {
   return (
     <Box display="flex" alignItems="center" gap={1} justifyContent={"center"}>
       <IconButton onClick={handleClick} sx={{ p: 0 }}>
-        <Avatar alt={name} />
+        <Avatar alt={name} variant="rounded" />
       </IconButton>
 
       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>

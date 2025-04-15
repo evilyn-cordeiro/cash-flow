@@ -24,6 +24,7 @@ import {
 import FilterListIcon from "@mui/icons-material/FilterList";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import AddIcon from "@mui/icons-material/Add";
+import { useNavigate } from "react-router-dom";
 
 const resumoFinanceiro = {
   entradas: 4500,
@@ -48,6 +49,8 @@ export default function ControleFinanceiroPage() {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
+  const navigate = useNavigate();
+
   const paginatedRows = transacoes.slice(
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage
@@ -60,9 +63,13 @@ export default function ControleFinanceiroPage() {
 
   const handleMenuClose = () => setAnchorEl(null);
 
+  const handleNovoLancamento = () => {
+    navigate("/novo-lancamento");
+  };
+
   return (
-    <Box p={isSmallScreen ? 2 : 4}>
-      <Box mb={3}>
+    <Box p={isSmallScreen ? 2 : 3}>
+      <Box>
         <Typography variant="h4" fontWeight="bold">
           Controle Financeiro
         </Typography>
@@ -139,6 +146,7 @@ export default function ControleFinanceiroPage() {
           variant="contained"
           size="large"
           startIcon={isSmallScreen ? <AddIcon /> : null}
+          onClick={handleNovoLancamento}
         >
           {!isSmallScreen && "Novo Lançamento"}
         </Button>
@@ -199,7 +207,6 @@ export default function ControleFinanceiroPage() {
         />
       </TableContainer>
 
-      {/* Menu de ações */}
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
