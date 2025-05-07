@@ -1,0 +1,34 @@
+# Node.js dependencies
+node_modules/
+
+# Diretório onde o TypeScript compila para JavaScript
+dist/
+
+# Arquivo de variáveis de ambiente (contém senhas, dados sensíveis)
+.env
+
+# Arquivos de log
+*.log
+
+# Arquivos de cache do TypeScript
+*.tsbuildinfo
+
+# Diretórios e arquivos do editor (ex: VS Code, IntelliJ)
+.vscode/
+.idea/
+
+# Arquivos temporários
+*.tmp
+*.swp
+
+# Dependências de testes, caso existam
+coverage/
+
+# Arquivos do pacote lock, caso queira ignorar
+package-lock.json
+yarn.lock
+
+# Arquivos de debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

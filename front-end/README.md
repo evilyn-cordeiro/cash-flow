@@ -21,10 +21,11 @@ Este projeto tem como objetivo fornecer uma plataforma simples e eficiente para 
 
 ## Tecnologias Utilizadas
 
-- **Frontend**: React com Vite
-- **Backend**: (Tecnologia do backend a ser definida, exemplo: Node.js, Express)
-- **Banco de Dados**: (Banco de dados a ser escolhido, exemplo: MongoDB, PostgreSQL)
-- **Estilização**: Tailwind CSS
+- **Frontend**: React com Vite - Typescript
+- **Backend**: Node JS
+- **Banco de Dados**: PostgreSQL
+- **Estilização**: Styled Component
+- **Lib de Componentes**: Material UI
 - **Ferramentas de Build**: Vite
 
 ## Padrão de Commits
@@ -46,7 +47,7 @@ Siga os passos abaixo para rodar o projeto localmente:
 ### 1. Clonar o Repositório
 
 ```bash
-git clone https://github.com/seu-usuario/nome-do-repositorio.git
+git clone https://github.com/evilyn-cordeiro/cash-flow.git
 ```
 
 ### 2. Acessar a pasta
