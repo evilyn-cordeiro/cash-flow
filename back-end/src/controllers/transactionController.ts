@@ -27,7 +27,8 @@ export const createTransaction: RequestHandler = async (
 
     res.status(201).json(transaction);
   } catch (error) {
-    res.status(500).json({ message: "Erro ao buscar transação.", error });
+    console.error("Erro ao criar transação:", error); // Log detalhado do erro
+    res.status(500).json({ message: "Erro ao criar transação.", error });
   }
 };
 

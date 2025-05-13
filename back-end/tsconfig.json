@@ -4,9 +4,10 @@
     "module": "CommonJS",
     "moduleResolution": "node",
     "strict": true,
+    "types": ["node", "jest"],
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true
   },
-  "include": ["src"]
+  "include": ["src", "tests"]
 }
