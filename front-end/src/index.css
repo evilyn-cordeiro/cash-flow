@@ -1,7 +1,7 @@
 body {
   font-family: "Poppins", sans-serif;
   margin: 0;
-  padding: 0 3rem;
+  padding: 0;
   background-color: #fff;
   color: #333;
 }
@@ -14,10 +14,4 @@ h3 {
 
 p {
   font-weight: 400;
-}
-
-@media (max-width: 600px) {
-  body {
-    padding: 1rem;
-  }
 }
