@@ -15,25 +15,13 @@ export const login = async (email: string, password: string) => {
   }
 };
 
-export const register = async (
-  name: string,
-  email: string,
-  password: string
-) => {
-  try {
-    const response = await axios.post(`${API_URL}/register`, {
-      name,
-      email,
-      password,
-    });
-    return response.data;
-  } catch (error: any) {
-    if (error.response && error.response.data) {
-      throw new Error(
-        error.response.data.message || "Erro ao registrar usuário"
-      );
-    } else {
-      throw new Error("Erro de conexão com o servidor");
-    }
-  }
+export const register = async (userData: {
+  name: string;
+  email: string;
+  password: string;
+  kind: string;
+  cpfCnpj: string;
+}) => {
+  const response = await axios.post(`${API_URL}/register`, userData);
+  return response.data;
 };

@@ -19,4 +19,8 @@ app.use(express.json());
 app.use("/auth", userRoutes);
 app.use("/transaction", transactionRoutes);
 
-export { app };
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`🚀 Servidor rodando na porta ${PORT}`);
+});

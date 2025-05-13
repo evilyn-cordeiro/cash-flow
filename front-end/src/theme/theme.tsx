@@ -36,7 +36,7 @@ export const theme = createTheme({
           border: "1px solid",
           borderColor: "#49474E",
           fontSize: 16,
-          height: "44px",
+          height: "40px",
           padding: "10px 12px",
           transition: theme.transitions.create([
             "border-color",

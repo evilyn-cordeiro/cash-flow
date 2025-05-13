@@ -1,6 +1,12 @@
 import React from "react";
-import { Box, InputBase, InputLabel, Typography } from "@mui/material";
-import { forwardRef } from "react";
+import {
+  Box,
+  InputBase,
+  InputLabel,
+  Typography,
+  TextField,
+} from "@mui/material";
+import { forwardRef, ReactNode } from "react";
 
 interface FormInputProps {
   label: string;
@@ -10,7 +16,11 @@ interface FormInputProps {
   name?: string;
   required?: boolean;
   errorMessage?: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
+  select?: boolean;
+  children?: ReactNode; // necessário para <MenuItem>s em caso de select
 }
 
 const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
@@ -24,28 +34,52 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
       required = false,
       onChange,
       errorMessage,
+      select = false,
+      children,
       ...rest
     },
     ref
   ) => {
     return (
       <Box>
-        <InputLabel shrink htmlFor={name} required={required}>
-          {label}
-        </InputLabel>
-        <InputBase
-          id={name}
-          name={name}
-          placeholder={placeholder}
-          type={type}
-          fullWidth
-          inputRef={ref}
-          value={String(value)}
-          onChange={onChange}
-          required={required}
-          autoComplete={"off"}
-          {...rest}
-        />
+        {select ? (
+          <TextField
+            select
+            fullWidth
+            name={name}
+            label={label}
+            value={value}
+            onChange={onChange}
+            sx={{ paddingTop: "0.3rem" }}
+            required={required}
+            error={!!errorMessage}
+            inputRef={ref}
+            variant="standard"
+            {...rest}
+          >
+            {children}
+          </TextField>
+        ) : (
+          <>
+            <InputLabel shrink htmlFor={name} required={required}>
+              {label}
+            </InputLabel>
+            <InputBase
+              id={name}
+              name={name}
+              placeholder={placeholder}
+              type={type}
+              fullWidth
+              inputRef={ref}
+              value={String(value)}
+              onChange={onChange}
+              required={required}
+              autoComplete={"off"}
+              {...rest}
+            />
+          </>
+        )}
+
         {errorMessage && (
           <Typography
             variant="caption"
@@ -59,4 +93,5 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
     );
   }
 );
+
 export default FormInput;

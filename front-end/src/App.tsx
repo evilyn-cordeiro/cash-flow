@@ -8,6 +8,7 @@ import {
   NovoLancamento,
 } from "./pages";
 import PrivateRoute from "./routes/PrivateRoute";
+import Register from "./pages/Register";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
       <Routes>
         {/* Rotas públicas */}
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         {/* Layout aplicado às rotas privadas */}
         <Route element={<Layout />}>
           <Route element={<PrivateRoute />}>
