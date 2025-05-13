@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import userRoutes from "./routes/userRoutes";
+import transactionRoutes from "./routes/transactionRoutes";
 
 dotenv.config();
 
@@ -15,8 +16,8 @@ app.use(
 );
 
 app.use(express.json());
-
 app.use("/auth", userRoutes);
+app.use("/transaction", transactionRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
