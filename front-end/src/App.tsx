@@ -1,9 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-
-// Layout
 import Layout from "./layout/Default";
-
-// Páginas
 import {
   AgendamentoPage,
   ControleFinanceiroPage,
@@ -19,7 +15,6 @@ function App() {
       <Routes>
         {/* Rotas públicas */}
         <Route path="/login" element={<Login />} />
-
         {/* Layout aplicado às rotas privadas */}
         <Route element={<Layout />}>
           <Route element={<PrivateRoute />}>

@@ -2,10 +2,13 @@ import React from "react";
 import { Avatar, Box, IconButton, Menu, MenuItem } from "@mui/material";
 
 const AvatarHeader = ({ name = "Usuário" }) => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
+    null
+  );
   const open = Boolean(anchorEl);
 
-  const handleClick = (event) => setAnchorEl(event.currentTarget);
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) =>
+    setAnchorEl(event.currentTarget);
 
   const handleClose = () => setAnchorEl(null);
 

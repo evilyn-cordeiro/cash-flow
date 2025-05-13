@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
-import { Box, Button, Link } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { FormInput } from "../../components";
 import { login } from "../../services/userAuthService";
 
@@ -19,59 +19,54 @@ const Login = () => {
       localStorage.setItem("token", data.token);
       enqueueSnackbar("Login realizado com sucesso!", { variant: "success" });
       navigate("/");
-    } catch (error) {
-      enqueueSnackbar(`${error}`, {
-        variant: "error",
-      });
+    } catch (error: any) {
+      console.error("Erro de login:", error);
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Erro ao fazer login.";
+      enqueueSnackbar(errorMessage, { variant: "error" });
     }
   };
 
   return (
-    <Box sx={{ position: "relative", minHeight: "100vh", overflow: "hidden" }}>
-      {/* Vídeo de fundo */}
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
-        style={{
-          position: "absolute",
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          zIndex: -2,
-        }}
-      >
-        <source src="/background.mp4" type="video/mp4" />
-        Seu navegador não suporta vídeo em HTML5.
-      </video>
-
-      {/* Gradient escuro sobre o vídeo */}
+    <Box
+      sx={{
+        display: "flex",
+        minHeight: "100vh",
+        flexDirection: { xs: "column", md: "row" },
+      }}
+    >
       <Box
         sx={{
-          position: "absolute",
-          width: "100%",
-          height: "100%",
-          zIndex: -1,
-          background:
-            "linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0.9))",
+          flex: 1,
+          display: { xs: "none", md: "block" },
+          backgroundImage:
+            'url("https://conteudo.solutudo.com.br/wp-content/uploads/2020/01/BARBEARIA-ARACAJU-BARBEIRO-MESTRE.png")',
+          backgroundSize: "cover",
+          backgroundPosition: "center",
         }}
       />
 
-      {/* Container do formulário */}
       <Box
         sx={{
+          flex: 1,
           display: "flex",
-          justifyContent: "center",
+          flexDirection: "column",
+          justifyContent: "space-between",
           alignItems: "center",
-          minHeight: "100vh",
-          px: 2,
+          p: 4,
+          backgroundColor: "background.default",
         }}
       >
+        <Box sx={{ alignSelf: { xs: "center", md: "flex-end" }, mb: 2 }}>
+          <img src="/logo-cash-flow.svg" alt="Logo" style={{ height: 40 }} />
+        </Box>
+
         <Box
           sx={{
-            maxWidth: 412,
-            width: "100%",
+            maxWidth: 350,
+            width: "90%",
             bgcolor: "background.paper",
             borderRadius: 2,
             boxShadow: 5,
@@ -112,12 +107,7 @@ const Login = () => {
                 mt: 2,
               }}
             >
-              <Button
-                type="submit"
-                variant="contained"
-                fullWidth
-                disabled={!email || !password}
-              >
+              <Button type="submit" variant="contained" fullWidth>
                 Entrar
               </Button>
 
@@ -126,19 +116,15 @@ const Login = () => {
                 onClick={() => navigate("/register")}
                 fullWidth
               >
-                Cadastrar-se
+                Cadastrar
               </Button>
             </Box>
-
-            <Link
-              href="/forgot-password"
-              underline="hover"
-              sx={{ mt: 2, color: "primary.main", textAlign: "center" }}
-            >
-              Esqueci minha senha
-            </Link>
           </Box>
         </Box>
+
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 4 }}>
+          © Direitos reservados 2025
+        </Typography>
       </Box>
     </Box>
   );

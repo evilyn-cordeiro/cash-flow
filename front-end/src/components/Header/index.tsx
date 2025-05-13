@@ -11,7 +11,11 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import AvatarHeader from "../AvatarHeader";
 
-const Header = ({ onMenuClick }) => {
+interface HeaderProps {
+  onMenuClick: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
