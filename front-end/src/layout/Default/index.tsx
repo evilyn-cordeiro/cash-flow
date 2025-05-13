@@ -1,11 +1,9 @@
 import React, { useState, useMemo } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, Link } from "react-router-dom";
 import {
   Box,
   Toolbar,
   Drawer,
-  useTheme,
-  useMediaQuery,
   List,
   ListItem,
   ListItemIcon,
@@ -13,9 +11,7 @@ import {
   Divider,
 } from "@mui/material";
 import { CalendarMonth, Home, MoneyOutlined } from "@mui/icons-material";
-import { Link } from "react-router-dom";
 import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 
 const drawerWidth = 240;
 
@@ -30,11 +26,9 @@ const menuItems = [
 ];
 
 const Layout = () => {
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const handleDrawerToggle = () => setMobileOpen((prev) => !prev);
+  const toggleDrawer = () => setDrawerOpen((prev) => !prev);
 
   const drawerContent = useMemo(
     () => (
@@ -45,9 +39,10 @@ const Layout = () => {
           {menuItems.map(({ text, icon, path }) => (
             <ListItem
               key={text}
+              type="button"
               component={Link}
               to={path}
-              onClick={isMobile ? handleDrawerToggle : undefined}
+              onClick={toggleDrawer}
             >
               <ListItemIcon>{icon}</ListItemIcon>
               <ListItemText primary={text} />
@@ -56,21 +51,21 @@ const Layout = () => {
         </List>
       </>
     ),
-    [isMobile]
+    []
   );
 
   return (
     <Box sx={{ display: "flex" }}>
-      <Header onMenuClick={handleDrawerToggle} />
+      {/* Cabeçalho com botão para abrir menu */}
+      <Header onMenuClick={toggleDrawer} />
 
+      {/* Menu lateral sempre temporário */}
       <Drawer
-        variant={isMobile ? "temporary" : "permanent"}
-        open={isMobile ? mobileOpen : true}
-        onClose={handleDrawerToggle}
+        variant="temporary"
+        open={drawerOpen}
+        onClose={toggleDrawer}
         ModalProps={{ keepMounted: true }}
         sx={{
-          width: drawerWidth,
-          flexShrink: 0,
           "& .MuiDrawer-paper": {
             width: drawerWidth,
             boxSizing: "border-box",
@@ -79,13 +74,9 @@ const Layout = () => {
       >
         {drawerContent}
       </Drawer>
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          p: 3,
-        }}
-      >
+
+      {/* Conteúdo principal */}
+      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <Toolbar />
         <Outlet />
       </Box>

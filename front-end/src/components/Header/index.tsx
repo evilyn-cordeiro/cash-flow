@@ -6,43 +6,56 @@ import {
   IconButton,
   Box,
   useMediaQuery,
-  useTheme,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import AvatarHeader from "../AvatarHeader";
+import theme from "../../theme/theme";
 
 interface HeaderProps {
   onMenuClick: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
-  const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   return (
-    <AppBar position="fixed" sx={{ zIndex: 9999 }}>
+    <AppBar
+      position="fixed"
+      color="default"
+      elevation={1}
+      sx={{
+        backgroundColor: theme.palette.background.default,
+        color: theme.palette.text.primary,
+      }}
+    >
       <Toolbar sx={{ paddingX: isMobile ? 1 : 3 }}>
-        {isMobile && (
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            onClick={onMenuClick}
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
-        )}
+        <IconButton
+          edge="start"
+          color="inherit"
+          aria-label="menu"
+          onClick={onMenuClick}
+          sx={{ mr: 2, color: theme.palette.background.paper }}
+        >
+          <MenuIcon />
+        </IconButton>
+
+        {/* Logo */}
         <Typography
-          variant={isMobile ? "h6" : "h5"}
           sx={{
             flexGrow: 1,
-            color: "#fff",
             fontSize: isMobile ? "1.25rem" : "1.5rem",
+            display: "flex",
+            alignItems: "center",
           }}
         >
-          Meu Sistema
+          <img
+            src="/logo-cash-flow-white.svg"
+            alt="Logo"
+            style={{ height: 40 }}
+          />
         </Typography>
+
+        {/* Avatar */}
         <Box>
           <AvatarHeader name="João Silva" />
         </Box>

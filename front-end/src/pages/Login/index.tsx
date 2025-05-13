@@ -56,7 +56,7 @@ const Login = () => {
           justifyContent: "space-between",
           alignItems: "center",
           p: 4,
-          backgroundColor: "background.default",
+          backgroundColor: "background.paper",
         }}
       >
         <Box sx={{ alignSelf: { xs: "center", md: "flex-end" }, mb: 2 }}>

@@ -12,7 +12,7 @@ export const theme = createTheme({
       contrastText: "#121212",
     },
     background: {
-      default: "#f3f3f3",
+      default: "#121212",
       paper: "#f9f9f9",
     },
     text: {
