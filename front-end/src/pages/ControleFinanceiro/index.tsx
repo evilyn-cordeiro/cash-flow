@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -7,12 +7,11 @@ import {
   TableBody,
   TableCell,
   TableContainer,
-  TableHead,
   TableRow,
+  TableHead,
   TextField,
   IconButton,
   Chip,
-  TablePagination,
   Menu,
   MenuItem,
   Button,
@@ -20,63 +19,124 @@ import {
   useTheme,
   Card,
   CardContent,
+  CircularProgress,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from "@mui/material";
-import FilterListIcon from "@mui/icons-material/FilterList";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import AddIcon from "@mui/icons-material/Add";
-import { useNavigate } from "react-router-dom";
-
-const resumoFinanceiro = {
-  entradas: 4500,
-  saidas: 3200,
-  saldo: 1300,
-};
-
-const transacoes = Array.from({ length: 20 }, (_, i) => ({
-  id: i + 1,
-  descricao: `Transação ${i + 1}`,
-  data: `2025-04-${(i % 30) + 1}`.padStart(10, "0"),
-  valor: ((i + 1) * 100).toFixed(2),
-  tipo: i % 2 === 0 ? "Entrada" : "Saída",
-}));
+import {
+  getAllTransactions,
+  deleteTransaction,
+} from "../../services/transactionService";
+import {
+  InfoOutlined,
+  MoreVert as MoreVertIcon,
+  Add as AddIcon,
+} from "@mui/icons-material";
+import LancamentoModal from "../NovoLancamento";
 
 export default function ControleFinanceiroPage() {
+  const [transacoes, setTransacoes] = useState<any[]>([]);
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [rowsPerPage] = useState(5);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedRow, setSelectedRow] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editData, setEditData] = useState<any>(null);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const navigate = useNavigate();
+  const fetchTransactions = async () => {
+    try {
+      const data = await getAllTransactions();
+      setTransacoes(data as any);
+    } catch (error) {
+      console.error("Erro ao buscar transações:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchTransactions().finally(() => setLoading(false));
+  }, []);
+
+  const resumoFinanceiro = {
+    entradas: transacoes
+      .filter((t) => t.type === "INCOME")
+      .reduce((acc, t) => acc + Number(t.amount), 0),
+    saidas: transacoes
+      .filter((t) => t.type === "EXPENSE")
+      .reduce((acc, t) => acc + Number(t.amount), 0),
+    saldo: 0, // Initialize saldo
+  };
+  resumoFinanceiro.saldo = resumoFinanceiro.entradas - resumoFinanceiro.saidas;
 
   const paginatedRows = transacoes.slice(
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage
   );
 
-  const handleMenuClick = (event, row) => {
+  const handleMenuClick = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    row: any
+  ) => {
     setAnchorEl(event.currentTarget);
     setSelectedRow(row);
   };
 
   const handleMenuClose = () => setAnchorEl(null);
 
-  const handleNovoLancamento = () => {
-    navigate("/novo-lancamento");
+  const handleRemover = async () => {
+    if (!selectedRow) return;
+
+    try {
+      await deleteTransaction(selectedRow.id);
+      setTransacoes((prev) => prev.filter((t) => t.id !== selectedRow.id));
+    } catch (error) {
+      console.error("Erro ao remover transação:", error);
+    } finally {
+      handleMenuClose();
+      setConfirmDelete(false);
+    }
   };
+
+  const handleNovoLancamento = () => {
+    setEditData(null);
+    setModalOpen(true);
+  };
+
+  const handleEditar = () => {
+    setEditData(selectedRow);
+    setModalOpen(true);
+    handleMenuClose();
+  };
+
+  const getTipoLabel = (type: string) =>
+    type === "INCOME" ? "Entrada" : "Saída";
+
+  const getTipoCor = (type: string) =>
+    type === "INCOME" ? "success" : "error";
+
+  if (loading) {
+    return (
+      <Box p={4} display="flex" justifyContent="center">
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <Box p={isSmallScreen ? 2 : 3}>
-      <Box>
-        <Typography variant="h4" fontWeight="bold">
-          Controle Financeiro
-        </Typography>
-        <Typography color="text.secondary">
-          Acompanhe seus lançamentos financeiros
-        </Typography>
-      </Box>
+      <Typography variant="h4" fontWeight="bold">
+        Controle Financeiro
+      </Typography>
+      <Typography color="text.secondary" mb={3}>
+        Acompanhe seus lançamentos financeiros
+      </Typography>
 
       <Box
         display="flex"
@@ -124,87 +184,86 @@ export default function ControleFinanceiroPage() {
       <Box
         display="flex"
         flexDirection={isSmallScreen ? "column" : "row"}
-        justifyContent="space-between"
+        justifyContent="flex-end"
         alignItems="center"
-        gap={2}
-        mb={3}
+        gap={1}
+        mb={2}
       >
-        <Box display="flex" alignItems="center" gap={1} flex={1}>
-          <TextField
-            size="medium"
-            label="Buscar"
-            placeholder="Descrição, tipo..."
-            variant="outlined"
-            fullWidth
-          />
-          <IconButton>
-            <FilterListIcon />
-          </IconButton>
-        </Box>
+        <TextField
+          placeholder="Descrição, tipo..."
+          variant="outlined"
+          size="medium"
+          fullWidth
+          sx={{ maxWidth: "500px" }}
+        />
 
         <Button
           variant="contained"
-          size="large"
-          startIcon={isSmallScreen ? <AddIcon /> : null}
+          size="medium"
+          startIcon={<AddIcon />}
           onClick={handleNovoLancamento}
         >
-          {!isSmallScreen && "Novo Lançamento"}
+          Novo Lançamento
         </Button>
       </Box>
 
       <TableContainer component={Paper}>
-        <Table size={isSmallScreen ? "small" : "medium"}>
+        <Table>
           <TableHead>
             <TableRow>
               <TableCell>Descrição</TableCell>
-
-              {!isSmallScreen && <TableCell>Data</TableCell>}
-
+              {!isSmallScreen && <TableCell>Data Cadastro</TableCell>}
               <TableCell>Valor</TableCell>
-
               {!isSmallScreen && <TableCell>Tipo</TableCell>}
-
               <TableCell align="right">Ações</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedRows.map((row) => (
-              <TableRow key={row.id}>
-                <TableCell>{row.descricao}</TableCell>
-
-                {!isSmallScreen && <TableCell>{row.data}</TableCell>}
-
-                <TableCell>R$ {row.valor}</TableCell>
-
-                {!isSmallScreen && (
-                  <TableCell>
-                    <Chip
-                      label={row.tipo}
-                      color={row.tipo === "Entrada" ? "success" : "error"}
-                    />
-                  </TableCell>
-                )}
-
-                <TableCell align="right">
-                  <IconButton onClick={(e) => handleMenuClick(e, row)}>
-                    <MoreVertIcon />
-                  </IconButton>
+            {paginatedRows.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={5} align="center">
+                  <Box
+                    display="flex"
+                    flexDirection="column"
+                    alignItems="center"
+                    justifyContent="center"
+                    py={5}
+                  >
+                    <InfoOutlined sx={{ fontSize: 40, mb: 1 }} />
+                    <Typography variant="body1">
+                      Sem dados cadastrados para cálculo.
+                    </Typography>
+                  </Box>
                 </TableCell>
               </TableRow>
-            ))}
+            ) : (
+              paginatedRows.map((row) => (
+                <TableRow key={row.id}>
+                  <TableCell>{row.description}</TableCell>
+                  {!isSmallScreen && (
+                    <TableCell>
+                      {new Date(row.createdAt).toLocaleDateString()}
+                    </TableCell>
+                  )}
+                  <TableCell>R$ {Number(row.amount).toFixed(2)}</TableCell>
+                  {!isSmallScreen && (
+                    <TableCell>
+                      <Chip
+                        label={getTipoLabel(row.type)}
+                        color={getTipoCor(row.type)}
+                      />
+                    </TableCell>
+                  )}
+                  <TableCell align="right">
+                    <IconButton onClick={(e) => handleMenuClick(e, row)}>
+                      <MoreVertIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
-        <TablePagination
-          component="div"
-          count={transacoes.length}
-          page={page}
-          onPageChange={(_, newPage) => setPage(newPage)}
-          rowsPerPage={rowsPerPage}
-          onRowsPerPageChange={(e) =>
-            setRowsPerPage(parseInt(e.target.value, 10))
-          }
-          labelRowsPerPage="Linhas por página:"
-        />
       </TableContainer>
 
       <Menu
@@ -212,23 +271,44 @@ export default function ControleFinanceiroPage() {
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
       >
-        <MenuItem
-          onClick={() => {
-            console.log("Editar", selectedRow);
-            handleMenuClose();
-          }}
-        >
-          Editar
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            console.log("Remover", selectedRow);
-            handleMenuClose();
-          }}
-        >
-          Remover
-        </MenuItem>
+        <MenuItem onClick={handleEditar}>Editar</MenuItem>
+        <MenuItem onClick={() => setConfirmDelete(true)}>Remover</MenuItem>
       </Menu>
+
+      {/* Confirmação de deleção */}
+      <Dialog
+        open={confirmDelete}
+        onClose={() => setConfirmDelete(false)}
+        aria-labelledby="alert-dialog-title"
+      >
+        <DialogTitle id="alert-dialog-title">Confirmar remoção</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Tem certeza que deseja deletar esta transação? Essa ação não poderá
+            ser desfeita.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirmDelete(false)}>Cancelar</Button>
+          <Button color="error" onClick={handleRemover} autoFocus>
+            Remover
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <LancamentoModal
+        open={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+          setEditData(null);
+        }}
+        onSave={() => {
+          fetchTransactions();
+          setModalOpen(false);
+          setEditData(null);
+        }}
+        editingData={editData}
+      />
     </Box>
   );
 }

@@ -27,7 +27,7 @@ export const createTransaction: RequestHandler = async (
 
     res.status(201).json(transaction);
   } catch (error) {
-    console.error("Erro ao criar transação:", error); // Log detalhado do erro
+    console.error("Erro ao criar transação:", error);
     res.status(500).json({ message: "Erro ao criar transação.", error });
   }
 };
@@ -59,7 +59,7 @@ export const getTransactionById: RequestHandler = async (
     });
 
     if (!transaction) {
-      res.status(404).json({ message: "Transação não encontrada." });
+      res.status(404).json({ message: "Lançamento não encontrado." });
       return;
     }
 
@@ -90,7 +90,7 @@ export const updateTransaction: RequestHandler = async (
 
     res.status(200).json(updated);
   } catch (error) {
-    res.status(500).json({ message: "Erro ao atualizar transação.", error });
+    res.status(500).json({ message: "Erro ao atualizar lançamento.", error });
   }
 };
 
@@ -104,7 +104,7 @@ export const deleteTransaction: RequestHandler = async (
     await prisma.transaction.delete({ where: { id: Number(id) } });
     res.status(204).send();
   } catch (error) {
-    res.status(500).json({ message: "Erro ao deletar transação.", error });
+    res.status(500).json({ message: "Erro ao deletar lançamento.", error });
     return;
   }
 };

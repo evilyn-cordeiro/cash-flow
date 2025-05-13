@@ -1,151 +1,168 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  Box,
-  Typography,
-  TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
   Button,
-  Container,
-  Paper,
-  CssBaseline,
-  Breadcrumbs,
-  Link,
+  MenuItem,
+  Box,
+  CircularProgress,
 } from "@mui/material";
+import {
+  createTransaction,
+  updateTransaction,
+} from "../../services/transactionService";
+import { FormInput } from "../../components";
 
-export default function NovoLancamento({}) {
+interface LancamentoModalProps {
+  open: boolean;
+  onClose: () => void;
+  onSave: () => void;
+  editingData?: any | null;
+}
+
+export default function LancamentoModal({
+  open,
+  onClose,
+  onSave,
+  editingData,
+}: LancamentoModalProps) {
   const [formData, setFormData] = useState({
-    type: "Receita",
+    type: "Entrada",
+    name: "",
     amount: "",
     description: "",
     date: "",
   });
 
-  const [descriptionLength, setDescriptionLength] = useState(0);
+  const [loading, setLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    if (editingData) {
+      setFormData({
+        type: editingData.type || "Entrada",
+        name: editingData.name || "",
+        amount: editingData.amount || "",
+        description: editingData.description || "",
+        date: editingData.createdAt?.split("T")[0] || "",
+      });
+    } else {
+      setFormData({
+        type: "Entrada",
+        name: "",
+        amount: "",
+        description: "",
+        date: "",
+      });
+    }
+  }, [editingData]);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-    if (name === "description") {
-      setDescriptionLength(value.length);
+  const handleSubmit = async () => {
+    setLoading(true);
+    try {
+      if (editingData) {
+        await updateTransaction(editingData.id, {
+          ...formData,
+          amount: Number(formData.amount),
+        });
+      } else {
+        await createTransaction({
+          ...formData,
+          amount: Number(formData.amount),
+          userId: 4,
+        });
+      }
+
+      onSave();
+    } catch (error) {
+      console.error("Erro ao salvar lançaento:", error);
+      alert("Erro ao salvar lançamento.");
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    alert("Cadastro realizado com sucesso!");
-    setFormData({
-      type: "Receita",
-      amount: "",
-      description: "",
-      date: "",
-    });
-  };
-
-  const handleBack = () => window.history.back();
-
-  const handleCancel = () => window.history.back();
-
   return (
-    <Box width={"100%"} sx={{ backgroundColor: "#f4f4f9" }}>
-      <CssBaseline />
-      <Container component="main" sx={{ marginTop: 2 }}>
-        <Breadcrumbs aria-label="breadcrumb">
-          <Link color="inherit" href="/" onClick={handleBack}>
-            Home
-          </Link>
-          <Typography color="textPrimary">
-            Cadastro de Transação Financeira
-          </Typography>
-        </Breadcrumbs>
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+      <DialogTitle>
+        {editingData ? "Editar Lançamento" : "Novo Lançamento"}
+      </DialogTitle>
 
-        <Paper
-          sx={{
-            padding: 3,
-            borderRadius: 2,
-            backgroundColor: "rgba(255, 255, 255, 0.9)",
-            boxShadow: 3,
-            marginTop: 2,
-          }}
+      <DialogContent dividers>
+        <Box display="flex" flexDirection="column" gap={2} mt={1}>
+          <FormInput
+            label="Tipo de Lançamento"
+            name="type"
+            value={formData.type}
+            onChange={handleChange}
+            select
+            required
+          >
+            <MenuItem value="INCOME">Entrada</MenuItem>
+            <MenuItem value="EXPENSE">Saída</MenuItem>
+          </FormInput>
+
+          <FormInput
+            label="Nome"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            placeholder="Ex: Salário, Conta de Luz..."
+            required
+          />
+
+          <FormInput
+            label="Valor"
+            name="amount"
+            type="number"
+            value={formData.amount}
+            onChange={handleChange}
+            required
+            placeholder="R$ 0,00"
+          />
+
+          <FormInput
+            label="Descrição"
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            placeholder="Detalhes do lançamento..."
+            required
+          />
+
+          <FormInput
+            label="Data"
+            name="date"
+            type="date"
+            value={formData.date}
+            onChange={handleChange}
+            required
+          />
+        </Box>
+      </DialogContent>
+
+      <DialogActions>
+        <Button onClick={onClose} color="inherit" disabled={loading}>
+          Cancelar
+        </Button>
+        <Button
+          onClick={handleSubmit}
+          color="primary"
+          variant="contained"
+          disabled={loading}
+          startIcon={loading && <CircularProgress size={18} />}
         >
-          <Typography variant="h5" align="left" gutterBottom>
-            Cadastro de Transação Financeira
-          </Typography>
-
-          <form onSubmit={handleSubmit}>
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-              <TextField
-                fullWidth
-                select
-                label="Tipo de Transação"
-                name="type"
-                value={formData.type}
-                onChange={handleChange}
-                SelectProps={{ native: true }}
-                required
-              >
-                <option value="Receita">Receita</option>
-                <option value="Despesa">Despesa</option>
-              </TextField>
-
-              <TextField
-                fullWidth
-                label="Valor"
-                name="amount"
-                type="number"
-                value={formData.amount}
-                onChange={handleChange}
-                required
-              />
-
-              <TextField
-                fullWidth
-                label="Descrição"
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                multiline
-                rows={4}
-                maxRows={6}
-                required
-                helperText={`${descriptionLength} / 255 caracteres`}
-                inputProps={{ maxLength: 255 }}
-              />
-
-              <TextField
-                fullWidth
-                label="Data"
-                name="date"
-                type="date"
-                value={formData.date}
-                onChange={handleChange}
-                InputLabelProps={{ shrink: true }}
-                required
-              />
-
-              <Box
-                display="flex"
-                gap={2}
-                marginTop={2}
-                justifyContent="flex-end"
-              >
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={handleCancel}
-                >
-                  Cancelar
-                </Button>
-                <Button variant="contained" color="primary" type="submit">
-                  Registrar Transação
-                </Button>
-              </Box>
-            </Box>
-          </form>
-        </Paper>
-      </Container>
-    </Box>
+          {editingData ? "Salvar Alterações" : "Registrar"}
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 }

@@ -5,7 +5,6 @@ import {
   ControleFinanceiroPage,
   Dashboard,
   Login,
-  NovoLancamento,
 } from "./pages";
 import PrivateRoute from "./routes/PrivateRoute";
 import Register from "./pages/Register";
@@ -26,7 +25,6 @@ function App() {
               path="/controle-financeiro"
               element={<ControleFinanceiroPage />}
             />
-            <Route path="/novo-lancamento" element={<NovoLancamento />} />
           </Route>
         </Route>
 
