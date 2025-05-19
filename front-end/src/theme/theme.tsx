@@ -27,6 +27,7 @@ export const theme = createTheme({
     },
   },
   components: {
+    // Input Style
     MuiInputBase: {
       styleOverrides: {
         root: ({ theme }) => ({
@@ -59,6 +60,53 @@ export const theme = createTheme({
           "&::placeholder": {
             color: "#6F6D78",
             opacity: 1,
+          },
+        },
+      },
+    },
+
+    // Table Style
+    MuiTable: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "#ffffff",
+        },
+      },
+    },
+    MuiTableHead: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "#121212",
+        },
+      },
+    },
+    MuiTableCell: {
+      styleOverrides: {
+        root: {
+          fontFamily: "'Inter', sans-serif",
+          fontSize: "14px",
+          color: "#121212",
+          borderBottom: "1px solid #e0e0e0",
+        },
+        head: {
+          color: "#ffffff",
+          fontWeight: 600,
+          backgroundColor: "#121212", // <- Adicionado aqui!
+        },
+        body: {
+          color: "#121212",
+        },
+      },
+    },
+
+    MuiTableRow: {
+      styleOverrides: {
+        root: {
+          "&:nth-of-type(odd)": {
+            backgroundColor: "#f5f5f5",
+          },
+          "&:hover": {
+            backgroundColor: alpha("#121212", 0.05),
           },
         },
       },

@@ -1,11 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   InputBase,
   InputLabel,
   Typography,
   TextField,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { forwardRef, ReactNode } from "react";
 
 interface FormInputProps {
@@ -40,6 +44,12 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
     },
     ref
   ) => {
+    const [showPassword, setShowPassword] = useState(false);
+
+    const handleClickShowPassword = () => {
+      setShowPassword((prev) => !prev);
+    };
+
     return (
       <Box>
         {select ? (
@@ -68,13 +78,22 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
               id={name}
               name={name}
               placeholder={placeholder}
-              type={type}
+              type={type === "password" && !showPassword ? "password" : "text"}
               fullWidth
               inputRef={ref}
               value={String(value)}
               onChange={onChange}
               required={required}
               autoComplete={"off"}
+              endAdornment={
+                type === "password" && (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleClickShowPassword} edge="end">
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                )
+              }
               {...rest}
             />
           </>

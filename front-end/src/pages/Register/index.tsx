@@ -54,26 +54,11 @@ const Register = () => {
           flex: 1,
           display: { xs: "none", md: "block" },
           backgroundImage:
-            'url("https://conteudo.solutudo.com.br/wp-content/uploads/2020/01/BARBEARIA-ARACAJU-BARBEIRO-MESTRE.png")',
+            'url("https://down-br.img.susercontent.com/file/f928d5a321f4af25cf82023612883867")',
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
-      >
-        {/* Logo */}
-        <Box
-          sx={{
-            alignSelf: { xs: "center", md: "flex-end" },
-            mb: 2,
-            padding: 2,
-          }}
-        >
-          <img
-            src="/logo-cash-flow-white.svg"
-            alt="Logo"
-            style={{ height: 40 }}
-          />
-        </Box>
-      </Box>
+      ></Box>
 
       {/* Lado direito */}
       <Box
@@ -83,10 +68,22 @@ const Register = () => {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          p: 4,
+          p: 3,
           backgroundColor: "background.default",
         }}
       >
+        {/* Logo */}
+        <Box
+          sx={{
+            mb: 2,
+          }}
+        >
+          <img
+            src="/logo-cash-flow-white.svg"
+            alt="Logo"
+            style={{ height: 40 }}
+          />
+        </Box>
         {/* Formulário de cadastro */}
         <Box
           sx={{

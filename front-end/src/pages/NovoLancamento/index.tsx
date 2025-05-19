@@ -45,7 +45,7 @@ export default function LancamentoModal({
         name: editingData.name || "",
         amount: editingData.amount || "",
         description: editingData.description || "",
-        date: editingData.createdAt?.split("T")[0] || "",
+        date: editingData.date?.split("T")[0] || "",
       });
     } else {
       setFormData({

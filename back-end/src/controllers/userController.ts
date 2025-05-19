@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { prisma } from "../config/prisma";
+import { isValidCNPJ, isValidCPF } from "../utils/validateCpfCnpj";
 
 const secret = process.env.JWT_SECRET || "segredo";
 
@@ -13,14 +14,26 @@ export const register: any = async (req: Request, res: Response) => {
     if (userExists)
       return res.status(400).json({ message: "Email já cadastrado." });
 
-    if (kind === "MEI" && !cpfCnpj) {
-      return res.status(400).json({ message: "CNPJ é obrigatório para MEI." });
+    if (kind === "MEI") {
+      if (!cpfCnpj) {
+        return res
+          .status(400)
+          .json({ message: "CNPJ é obrigatório para MEI." });
+      }
+      if (!isValidCNPJ(cpfCnpj)) {
+        return res.status(400).json({ message: "CNPJ inválido." });
+      }
     }
 
-    if (kind === "Customer" && !cpfCnpj) {
-      return res
-        .status(400)
-        .json({ message: "CPF é obrigatório para Clientes." });
+    if (kind === "Customer") {
+      if (!cpfCnpj) {
+        return res
+          .status(400)
+          .json({ message: "CPF é obrigatório para Clientes." });
+      }
+      if (!isValidCPF(cpfCnpj)) {
+        return res.status(400).json({ message: "CPF inválido." });
+      }
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);

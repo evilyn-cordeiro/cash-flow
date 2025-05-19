@@ -71,7 +71,7 @@ export default function ControleFinanceiroPage() {
     saidas: transacoes
       .filter((t) => t.type === "EXPENSE")
       .reduce((acc, t) => acc + Number(t.amount), 0),
-    saldo: 0, // Initialize saldo
+    saldo: 0,
   };
   resumoFinanceiro.saldo = resumoFinanceiro.entradas - resumoFinanceiro.saidas;
 
@@ -183,7 +183,7 @@ export default function ControleFinanceiroPage() {
 
       <Box
         display="flex"
-        flexDirection={isSmallScreen ? "column" : "row"}
+        flexDirection={"row"}
         justifyContent="flex-end"
         alignItems="center"
         gap={1}
@@ -200,10 +200,10 @@ export default function ControleFinanceiroPage() {
         <Button
           variant="contained"
           size="medium"
-          startIcon={<AddIcon />}
           onClick={handleNovoLancamento}
         >
-          Novo Lançamento
+          <AddIcon />
+          {!isSmallScreen && "Novo"}
         </Button>
       </Box>
 
@@ -242,7 +242,7 @@ export default function ControleFinanceiroPage() {
                   <TableCell>{row.description}</TableCell>
                   {!isSmallScreen && (
                     <TableCell>
-                      {new Date(row.createdAt).toLocaleDateString()}
+                      {new Date(row.date).toLocaleDateString()}
                     </TableCell>
                   )}
                   <TableCell>R$ {Number(row.amount).toFixed(2)}</TableCell>

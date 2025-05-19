@@ -92,7 +92,7 @@ const Login = () => {
 
             <FormInput
               label="Senha"
-              placeholder="Digite sua senha"
+              placeholder="*********"
               type="password"
               name="password"
               value={password}
