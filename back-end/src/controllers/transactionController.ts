@@ -9,8 +9,17 @@ export const createTransaction: RequestHandler = async (
 
   try {
     const user = await prisma.user.findUnique({ where: { id: userId } });
+
     if (!user) {
       res.status(404).json({ message: "Usuário não encontrado." });
+      return;
+    }
+
+    if (user.kind === "Customer") {
+      res.status(403).json({
+        message:
+          "Usuários do tipo 'cliente' não podem realizar transações financeiras.",
+      });
       return;
     }
 

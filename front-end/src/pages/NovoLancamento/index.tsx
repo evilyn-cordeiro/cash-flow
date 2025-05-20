@@ -14,6 +14,7 @@ import {
   updateTransaction,
 } from "../../services/transactionService";
 import { FormInput } from "../../components";
+import { enqueueSnackbar } from "notistack";
 
 interface LancamentoModalProps {
   open: boolean;
@@ -79,9 +80,11 @@ export default function LancamentoModal({
       }
 
       onSave();
+      enqueueSnackbar("Ação realizada com sucesso!", { variant: "success" });
     } catch (error) {
-      console.error("Erro ao salvar lançaento:", error);
-      alert("Erro ao salvar lançamento.");
+      enqueueSnackbar("Erro ao salvar lançamento.", {
+        variant: "error",
+      });
     } finally {
       setLoading(false);
     }
