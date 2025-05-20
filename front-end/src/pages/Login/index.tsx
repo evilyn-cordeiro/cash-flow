@@ -85,6 +85,7 @@ const Login = () => {
               label="E-mail"
               placeholder="Digite seu e-mail"
               type="email"
+              maxLength={100}
               value={email}
               name="email"
               onChange={(e) => setEmail(e.target.value)}

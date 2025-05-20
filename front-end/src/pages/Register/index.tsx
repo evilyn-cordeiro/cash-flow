@@ -69,7 +69,7 @@ const Register = () => {
           justifyContent: "center",
           alignItems: "center",
           p: 3,
-          backgroundColor: "background.default",
+          backgroundColor: "background.paper",
         }}
       >
         {/* Logo */}
@@ -78,11 +78,7 @@ const Register = () => {
             mb: 2,
           }}
         >
-          <img
-            src="/logo-cash-flow-white.svg"
-            alt="Logo"
-            style={{ height: 40 }}
-          />
+          <img src="/logo-cash-flow.svg" alt="Logo" style={{ height: 40 }} />
         </Box>
         {/* Formulário de cadastro */}
         <Box
@@ -104,11 +100,16 @@ const Register = () => {
           <Box
             component="form"
             onSubmit={handleRegister}
-            sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+            }}
           >
             <FormInput
               label="Nome"
               placeholder="Seu nome completo"
+              maxLength={255}
               value={name}
               onChange={(e) => setName(e.target.value)}
               name="name"
@@ -117,6 +118,7 @@ const Register = () => {
             <FormInput
               label="E-mail"
               placeholder="Seu e-mail"
+              maxLength={100}
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}

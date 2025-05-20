@@ -211,7 +211,7 @@ export default function ControleFinanceiroPage() {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Descrição</TableCell>
+              <TableCell>Título do Gasto</TableCell>
               {!isSmallScreen && <TableCell>Data Cadastro</TableCell>}
               <TableCell>Valor</TableCell>
               {!isSmallScreen && <TableCell>Tipo</TableCell>}
@@ -239,7 +239,7 @@ export default function ControleFinanceiroPage() {
             ) : (
               paginatedRows.map((row) => (
                 <TableRow key={row.id}>
-                  <TableCell>{row.description}</TableCell>
+                  <TableCell>{row.name}</TableCell>
                   {!isSmallScreen && (
                     <TableCell>
                       {new Date(row.date).toLocaleDateString()}

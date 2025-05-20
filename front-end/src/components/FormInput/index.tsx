@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, forwardRef, ReactNode } from "react";
 import {
   Box,
   InputBase,
@@ -10,7 +10,6 @@ import {
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import { forwardRef, ReactNode } from "react";
 
 interface FormInputProps {
   label: string;
@@ -20,11 +19,12 @@ interface FormInputProps {
   name?: string;
   required?: boolean;
   errorMessage?: string;
+  maxLength?: number;
   onChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
   select?: boolean;
-  children?: ReactNode; // necessário para <MenuItem>s em caso de select
+  children?: ReactNode;
 }
 
 const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
@@ -40,6 +40,7 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
       errorMessage,
       select = false,
       children,
+      maxLength,
       ...rest
     },
     ref
@@ -49,6 +50,21 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
     const handleClickShowPassword = () => {
       setShowPassword((prev) => !prev);
     };
+
+    // Tratamento especial para type="number"
+    const isPassword = type === "password";
+    const isNumber = type === "number";
+
+    const resolvedType = isPassword
+      ? showPassword
+        ? "text"
+        : "password"
+      : isNumber
+      ? "text" // para permitir maxLength
+      : type;
+
+    const inputMode = isNumber ? "numeric" : undefined;
+    const pattern = isNumber ? "[0-9]*" : undefined;
 
     return (
       <Box>
@@ -78,15 +94,20 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
               id={name}
               name={name}
               placeholder={placeholder}
-              type={type === "password" && !showPassword ? "password" : "text"}
+              type={resolvedType}
+              inputMode={inputMode}
               fullWidth
               inputRef={ref}
               value={String(value)}
               onChange={onChange}
               required={required}
-              autoComplete={"off"}
+              autoComplete="off"
+              inputProps={{
+                maxLength: maxLength ?? undefined,
+                pattern: pattern,
+              }}
               endAdornment={
-                type === "password" && (
+                isPassword && (
                   <InputAdornment position="end">
                     <IconButton onClick={handleClickShowPassword} edge="end">
                       {showPassword ? <VisibilityOff /> : <Visibility />}

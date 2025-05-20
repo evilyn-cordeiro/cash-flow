@@ -33,10 +33,9 @@ export default function LancamentoModal({
     name: "",
     amount: "",
     description: "",
-    date: "",
   });
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (editingData) {
@@ -45,7 +44,6 @@ export default function LancamentoModal({
         name: editingData.name || "",
         amount: editingData.amount || "",
         description: editingData.description || "",
-        date: editingData.date?.split("T")[0] || "",
       });
     } else {
       setFormData({
@@ -53,7 +51,6 @@ export default function LancamentoModal({
         name: "",
         amount: "",
         description: "",
-        date: "",
       });
     }
   }, [editingData]);
@@ -111,9 +108,10 @@ export default function LancamentoModal({
           </FormInput>
 
           <FormInput
-            label="Nome"
+            label="Título do Gasto"
             name="name"
             value={formData.name}
+            maxLength={50}
             onChange={handleChange}
             placeholder="Ex: Salário, Conta de Luz..."
             required
@@ -123,6 +121,7 @@ export default function LancamentoModal({
             label="Valor"
             name="amount"
             type="number"
+            maxLength={10}
             value={formData.amount}
             onChange={handleChange}
             required
@@ -132,18 +131,10 @@ export default function LancamentoModal({
           <FormInput
             label="Descrição"
             name="description"
+            maxLength={150}
             value={formData.description}
             onChange={handleChange}
             placeholder="Detalhes do lançamento..."
-            required
-          />
-
-          <FormInput
-            label="Data"
-            name="date"
-            type="date"
-            value={formData.date}
-            onChange={handleChange}
             required
           />
         </Box>
