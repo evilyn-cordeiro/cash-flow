@@ -12,23 +12,37 @@ import {
 } from "@mui/material";
 import { CalendarMonth, Home, MoneyOutlined } from "@mui/icons-material";
 import Header from "../../components/Header";
+import { useAuth } from "../../utils/authContext";
 
 const drawerWidth = 240;
 
 const menuItems = [
-  { text: "Início", icon: <Home />, path: "/" },
-  { text: "Agendamentos", icon: <CalendarMonth />, path: "/agendamento" },
+  {
+    text: "Início",
+    icon: <Home />,
+    path: "/",
+    rule: ["MEI"],
+  },
+  {
+    text: "Agendamentos",
+    icon: <CalendarMonth />,
+    path: "/agendamento",
+    rule: ["Customer"],
+  },
   {
     text: "Controle Financeiro",
     icon: <MoneyOutlined />,
     path: "/controle-financeiro",
+    rule: ["MEI"],
   },
 ];
 
 const Layout = () => {
+  const { user } = useAuth();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const toggleDrawer = () => setDrawerOpen((prev) => !prev);
+  console.log("Tipo de usuário:", user?.kind);
 
   const drawerContent = useMemo(
     () => (
@@ -36,22 +50,24 @@ const Layout = () => {
         <Toolbar />
         <Divider />
         <List>
-          {menuItems.map(({ text, icon, path }) => (
-            <ListItem
-              key={text}
-              type="button"
-              component={Link}
-              to={path}
-              onClick={toggleDrawer}
-            >
-              <ListItemIcon>{icon}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
+          {menuItems
+            .filter((item) => item.rule.includes(user?.kind ?? ""))
+            .map(({ text, icon, path }) => (
+              <ListItem
+                key={text}
+                type="button"
+                component={Link}
+                to={path}
+                onClick={toggleDrawer}
+              >
+                <ListItemIcon>{icon}</ListItemIcon>
+                <ListItemText primary={text} />
+              </ListItem>
+            ))}
         </List>
       </>
     ),
-    []
+    [user?.kind]
   );
 
   return (

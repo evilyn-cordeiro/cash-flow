@@ -8,29 +8,40 @@ import {
 } from "./pages";
 import PrivateRoute from "./routes/PrivateRoute";
 import Register from "./pages/Register";
+import { AuthProvider } from "./utils/authContext";
+import RoleBasedRoute from "./routes/Roles";
 
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        {/* Rotas públicas */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        {/* Layout aplicado às rotas privadas */}
-        <Route element={<Layout />}>
-          <Route element={<PrivateRoute />}>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/agendamento" element={<AgendamentoPage />} />
-            <Route
-              path="/controle-financeiro"
-              element={<ControleFinanceiroPage />}
-            />
-          </Route>
-        </Route>
+      <AuthProvider>
+        <Routes>
+          {/* Rotas públicas */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
-        {/* Rota fallback */}
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
+          <Route element={<Layout />}>
+            <Route element={<PrivateRoute />}>
+              {/* Rota só para MEI */}
+              <Route element={<RoleBasedRoute allowedRoles={["MEI"]} />}>
+                <Route path="/" element={<Dashboard />} />
+                <Route
+                  path="/controle-financeiro"
+                  element={<ControleFinanceiroPage />}
+                />
+              </Route>
+
+              {/* Rota só para Cliente */}
+              <Route element={<RoleBasedRoute allowedRoles={["Customer"]} />}>
+                <Route path="/agendamento" element={<AgendamentoPage />} />
+              </Route>
+            </Route>
+          </Route>
+
+          {/* Fallback */}
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   );
 }

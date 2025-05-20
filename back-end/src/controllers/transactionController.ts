@@ -15,6 +15,7 @@ export const createTransaction: RequestHandler = async (
       return;
     }
 
+    // Validação de tipo de usuário
     if (user.kind === "Customer") {
       res.status(403).json({
         message:

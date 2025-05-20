@@ -15,6 +15,7 @@ import {
 } from "../../services/transactionService";
 import { FormInput } from "../../components";
 import { enqueueSnackbar } from "notistack";
+import { useAuth } from "../../utils/authContext";
 
 interface LancamentoModalProps {
   open: boolean;
@@ -36,7 +37,17 @@ export default function LancamentoModal({
     description: "",
   });
 
+  const handleClose = () => {
+    setFormData({
+      type: "Entrada",
+      name: "",
+      amount: "",
+      description: "",
+    });
+    onClose();
+  };
   const [loading, setLoading] = useState<boolean>(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     if (editingData) {
@@ -60,6 +71,13 @@ export default function LancamentoModal({
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
+
+    if (name === "amount") {
+      if (formData.type === "INCOME" && value.startsWith("-")) {
+        return;
+      }
+    }
+
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -75,7 +93,7 @@ export default function LancamentoModal({
         await createTransaction({
           ...formData,
           amount: Number(formData.amount),
-          userId: 4,
+          userId: user?.id || 0,
         });
       }
 
@@ -91,7 +109,7 @@ export default function LancamentoModal({
   };
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+    <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
       <DialogTitle>
         {editingData ? "Editar Lançamento" : "Novo Lançamento"}
       </DialogTitle>
@@ -144,14 +162,14 @@ export default function LancamentoModal({
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={onClose} color="inherit" disabled={loading}>
+        <Button onClick={handleClose} color="inherit" disabled={loading}>
           Cancelar
         </Button>
         <Button
           onClick={handleSubmit}
           color="primary"
           variant="contained"
-          disabled={loading}
+          disabled={!formData.name || !formData.amount}
           startIcon={loading && <CircularProgress size={18} />}
         >
           {editingData ? "Salvar Alterações" : "Registrar"}

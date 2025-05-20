@@ -4,8 +4,10 @@ import { useSnackbar } from "notistack";
 import { Box, Button, Typography } from "@mui/material";
 import { FormInput } from "../../components";
 import { login } from "../../services/userAuthService";
+import { useAuth } from "../../utils/authContext"; // Importando o contexto
 
 const Login = () => {
+  const { login: loginContext } = useAuth();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const navigate = useNavigate();
@@ -16,9 +18,20 @@ const Login = () => {
 
     try {
       const data: any = await login(email, password);
+
       localStorage.setItem("token", data.token);
+
+      loginContext(data.user);
+
       enqueueSnackbar("Login realizado com sucesso!", { variant: "success" });
-      navigate("/");
+
+      if (data.user.kind === "MEI") {
+        navigate("/");
+      } else if (data.user.kind === "Customer") {
+        navigate("/agendamento");
+      } else {
+        navigate("/");
+      }
     } catch (error: any) {
       console.error("Erro de login:", error);
       const errorMessage =

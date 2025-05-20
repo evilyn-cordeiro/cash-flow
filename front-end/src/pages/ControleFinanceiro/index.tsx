@@ -189,13 +189,13 @@ export default function ControleFinanceiroPage() {
         gap={1}
         mb={2}
       >
-        <TextField
+        {/* <TextField
           placeholder="Descrição, tipo..."
           variant="outlined"
           size="medium"
           fullWidth
           sx={{ maxWidth: "500px" }}
-        />
+        /> */}
 
         <Button
           variant="contained"
