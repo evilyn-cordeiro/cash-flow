@@ -1,9 +1,8 @@
-// src/controllers/serviceController.ts
-import { Request, RequestHandler, Response } from "express";
+import { Request, Response } from "express";
 import { prisma } from "../config/prisma";
 
-export const createService: RequestHandler = async (req, res) => {
-  const { meiId, name, description, price } = req.body;
+export const createService = async (req: any, res: any) => {
+  const { meiId, name, description, duration, price } = req.body;
 
   try {
     const user = await prisma.user.findUnique({ where: { id: meiId } });
@@ -13,7 +12,7 @@ export const createService: RequestHandler = async (req, res) => {
     }
 
     const service = await prisma.service.create({
-      data: { meiId, name, description, price },
+      data: { meiId, name, description, duration, price },
     });
 
     res.status(201).json(service);
@@ -22,11 +21,36 @@ export const createService: RequestHandler = async (req, res) => {
   }
 };
 
-export const listServices: RequestHandler = async (_, res) => {
+export const listServices = async (req: Request, res: Response) => {
   try {
-    const services = await prisma.service.findMany({ include: { mei: true } });
+    const services = await prisma.service.findMany({
+      include: {
+        mei: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
+
     res.status(200).json(services);
   } catch (error) {
     res.status(500).json({ message: "Erro ao listar serviços.", error });
+  }
+};
+
+export const listServicesByMei = async (req: Request, res: Response) => {
+  const { meiId } = req.params;
+
+  try {
+    const services = await prisma.service.findMany({
+      where: { meiId: Number(meiId) },
+    });
+
+    res.status(200).json(services);
+  } catch (error) {
+    res.status(500).json({ message: "Erro ao buscar serviços do MEI.", error });
   }
 };

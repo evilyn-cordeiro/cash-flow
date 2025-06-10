@@ -1,12 +1,12 @@
 import { Router } from "express";
 import {
-  createAppointment,
-  listAppointmentsByMei,
+  createSchedule,
+  listSchedulesByCustomer
 } from "../controllers/appointmentController";
 
 const router = Router();
 
-router.post("/create", createAppointment);
-router.get("/mei/:meiId", listAppointmentsByMei);
+router.post("/create", createSchedule);
+router.get("/mei/:meiId", listSchedulesByCustomer);
 
 export default router;

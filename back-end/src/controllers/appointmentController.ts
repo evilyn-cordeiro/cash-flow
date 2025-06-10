@@ -1,45 +1,29 @@
-import { Request, RequestHandler, Response } from "express";
+import { Request, Response } from "express";
 import { prisma } from "../config/prisma";
 
-export const createAppointment: RequestHandler = async (req, res) => {
-  const { customerId, serviceId, scheduledTime } = req.body;
+export const createSchedule = async (req: any, res: any) => {
+  const { customerId, serviceId, scheduledAt, notes } = req.body;
 
   try {
     const [customer, service] = await Promise.all([
       prisma.user.findUnique({ where: { id: customerId } }),
-      prisma.service.findUnique({ where: { id: serviceId }, include: { mei: true } }),
+      prisma.service.findUnique({ where: { id: serviceId } }),
     ]);
 
     if (!customer || customer.kind !== "Customer") {
-      return res.status(403).json({ message: "Somente clientes podem agendar." });
+      return res.status(403).json({ message: "Apenas clientes podem agendar serviços." });
     }
 
     if (!service) {
       return res.status(404).json({ message: "Serviço não encontrado." });
     }
 
-    const appointment = await prisma.appointment.create({
+    const schedule = await prisma.schedule.create({
       data: {
         customerId,
         serviceId,
-        scheduledTime: new Date(scheduledTime),
-      },
-      include: { customer: true, service: true },
-    });
-
-    res.status(201).json(appointment);
-  } catch (error) {
-    res.status(500).json({ message: "Erro ao agendar serviço.", error });
-  }
-};
-
-export const listAppointmentsByMei: RequestHandler = async (req, res) => {
-  const { meiId } = req.params;
-
-  try {
-    const appointments = await prisma.appointment.findMany({
-      where: {
-        service: { meiId: Number(meiId) },
+        scheduledAt: new Date(scheduledAt),
+        notes,
       },
       include: {
         customer: true,
@@ -47,8 +31,48 @@ export const listAppointmentsByMei: RequestHandler = async (req, res) => {
       },
     });
 
-    res.status(200).json(appointments);
+    res.status(201).json(schedule);
   } catch (error) {
-    res.status(500).json({ message: "Erro ao buscar agendamentos.", error });
+    res.status(500).json({ message: "Erro ao criar agendamento.", error });
   }
 };
+
+export const listSchedulesByCustomer = async (req: Request, res: Response) => {
+  const { customerId } = req.params;
+
+  try {
+    const schedules = await prisma.schedule.findMany({
+      where: { customerId: Number(customerId) },
+      include: {
+        service: true,
+      },
+    });
+
+    res.status(200).json(schedules);
+  } catch (error) {
+    res.status(500).json({ message: "Erro ao buscar agendamentos do cliente.", error });
+  }
+};
+
+export const listSchedulesByMei = async (req: Request, res: Response) => {
+  const { meiId } = req.params;
+
+  try {
+    const schedules = await prisma.schedule.findMany({
+      where: {
+        service: {
+          meiId: Number(meiId),
+        },
+      },
+      include: {
+        customer: true,
+        service: true,
+      },
+    });
+
+    res.status(200).json(schedules);
+  } catch (error) {
+    res.status(500).json({ message: "Erro ao buscar agendamentos do MEI.", error });
+  }
+};
+
