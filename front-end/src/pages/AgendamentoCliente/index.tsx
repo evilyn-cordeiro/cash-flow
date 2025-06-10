@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -13,7 +13,6 @@ import {
   TableRow,
   Paper,
   Chip,
-  TablePagination,
   useMediaQuery,
   useTheme,
   Menu,
@@ -24,6 +23,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import AddIcon from "@mui/icons-material/Add";
 import { ModalAgendamento } from "./ModalAgendamento";
 import { ModalConfirmarCancelamento } from "./ModalCancelamento";
+import { getMyAppointments } from "../services/appointmentService";
 
 const statusColors = {
   Pendente: "warning",
@@ -31,32 +31,26 @@ const statusColors = {
   Cancelado: "error",
 };
 
-const allRows = Array.from({ length: 25 }, (_, i) => ({
-  id: i + 1,
-  servico: `Serviço ${(i % 5) + 1}`,
-  data: `2025-04-${(i % 30) + 1}`.padStart(10, "0"),
-  localizacao: `Cidade ${(i % 4) + 1}`,
-  status: i % 3 === 0 ? "Pendente" : i % 3 === 1 ? "Confirmado" : "Cancelado",
-}));
-
 export default function AgendamentoPage() {
-  const [page, setPage] = useState<number>(0);
-  const [rowsPerPage, setRowsPerPage] = useState<number>(5);
+  const [appointments, setAppointments] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [selectedRow, setSelectedRow] = useState<any>([]);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedRow, setSelectedRow] = useState<any>(null);
   const [openConfirm, setOpenConfirm] = useState(false);
 
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const token = localStorage.getItem("token");
 
-  const handleChangePage = (newPage) => setPage(newPage);
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
+  useEffect(() => {
+    if (token) {
+      getMyAppointments(token)
+        .then(setAppointments)
+        .catch((err) => console.error("Erro ao carregar agendamentos:", err));
+    }
+  }, [token]);
 
-  const handleMenuClick = (event, row) => {
+  const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>, row: any) => {
     setAnchorEl(event.currentTarget);
     setSelectedRow(row);
   };
@@ -75,11 +69,6 @@ export default function AgendamentoPage() {
     setOpenConfirm(false);
   };
 
-  const paginatedRows = allRows.slice(
-    page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage
-  );
-
   return (
     <Box p={isSmallScreen ? 2 : 4}>
       <ModalAgendamento onClose={() => setModalOpen(false)} open={modalOpen} />
@@ -87,8 +76,8 @@ export default function AgendamentoPage() {
         open={openConfirm}
         onClose={() => setOpenConfirm(false)}
         onConfirm={handleConfirmCancel}
-        servico={selectedRow.servico}
-        hora={selectedRow.data}
+        servico={selectedRow?.service?.name || ""}
+        hora={selectedRow?.dateTime || ""}
       />
 
       <Box mb={3}>
@@ -126,10 +115,10 @@ export default function AgendamentoPage() {
             variant="contained"
             size="large"
             fullWidth={isSmallScreen}
-            startIcon={isSmallScreen ? <AddIcon /> : null}
+            startIcon={<AddIcon />}
             onClick={() => setModalOpen(true)}
           >
-            {!isSmallScreen && "Novo Agendamento"}{" "}
+            {!isSmallScreen && "Novo Agendamento"}
           </Button>
         </Box>
       </Box>
@@ -139,26 +128,29 @@ export default function AgendamentoPage() {
           <TableHead>
             <TableRow>
               <TableCell>Serviço</TableCell>
-
               {!isSmallScreen && <TableCell>Data</TableCell>}
-
-              {!isSmallScreen && <TableCell>Localização</TableCell>}
-
+              {!isSmallScreen && <TableCell>Profissional</TableCell>}
               <TableCell>Status</TableCell>
               <TableCell align="right">Ações</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedRows.map((row) => (
+            {appointments.map((row) => (
               <TableRow key={row.id}>
-                <TableCell>{row.servico}</TableCell>
-
-                {!isSmallScreen && <TableCell>{row.data}</TableCell>}
-
-                {!isSmallScreen && <TableCell>{row.localizacao}</TableCell>}
-
+                <TableCell>{row.service?.name}</TableCell>
+                {!isSmallScreen && (
+                  <TableCell>
+                    {new Date(row.dateTime).toLocaleString("pt-BR")}
+                  </TableCell>
+                )}
+                {!isSmallScreen && (
+                  <TableCell>{row.mei?.name || "Não informado"}</TableCell>
+                )}
                 <TableCell>
-                  <Chip label={row.status} color={statusColors[row.status]} />
+                  <Chip
+                    label={row.status}
+                    color={statusColors[row.status] || "default"}
+                  />
                 </TableCell>
                 <TableCell align="right">
                   <IconButton onClick={(e) => handleMenuClick(e, row)}>
@@ -169,22 +161,9 @@ export default function AgendamentoPage() {
             ))}
           </TableBody>
         </Table>
-        <TablePagination
-          component="div"
-          count={allRows.length}
-          page={page}
-          onPageChange={(_, newPage) => handleChangePage(newPage)}
-          rowsPerPage={rowsPerPage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-          labelRowsPerPage="Linhas por página:"
-        />
       </TableContainer>
 
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
-      >
+      <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
         <MenuItem
           onClick={() => {
             console.log("Visualizar", selectedRow);

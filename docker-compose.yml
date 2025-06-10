@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./back-end
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./back-end/.env
+    depends_on:
+      - db
+
+  frontend:
+    build: ./front-end
+    ports:
+      - "5173:80"  # 5173 para Vite; use 3001 para CRA
+    depends_on:
+      - backend
+
+  db:
+    image: postgres:15
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: cash_flow
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres

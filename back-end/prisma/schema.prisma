@@ -43,3 +43,37 @@ enum TransactionType {
   EXPENSE  // Saída
 }
 
+model Service {
+  id          Int       @id @default(autoincrement())
+  meiId       Int
+  name        String
+  description String?
+  duration    Int      
+  price       Float
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  mei         User      @relation(fields: [meiId], references: [id])
+  schedules   Schedule[]
+}
+
+model Schedule {
+  id          Int       @id @default(autoincrement())
+  serviceId   Int
+  customerId  Int
+  scheduledAt DateTime 
+  status      ScheduleStatus @default(PENDING)
+  notes       String?   // observações do cliente ou do MEI
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  service     Service   @relation(fields: [serviceId], references: [id])
+  customer    User      @relation(fields: [customerId], references: [id])
+}
+
+enum ScheduleStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+

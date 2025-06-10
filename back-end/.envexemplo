@@ -1,1 +1,2 @@
 DATABASE_URL="postgresql://usuario:senha@localhost:5432/tabela_nome?schema=public"
+PORT=3000
