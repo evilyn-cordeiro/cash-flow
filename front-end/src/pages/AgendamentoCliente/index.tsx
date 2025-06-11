@@ -22,6 +22,10 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import AddIcon from "@mui/icons-material/Add";
 import { getMyAppointments } from "../../services/appointmentService";
+import ModalConfirmarCancelamento from "./ModalCancelamento";
+import ModalConfirmarAgendamento from "./ModalAgendamento";
+import dayjs from "dayjs";
+
 
 const statusColors: Record<string, "default" | "primary" | "secondary" | "error" | "info" | "success" | "warning"> = {
   PENDING: "warning",
@@ -49,6 +53,12 @@ interface Appointment {
   };
 }
 
+interface Profissional {
+  nome: string;
+  funcao: string;
+  local: string;
+}
+
 export default function AgendamentoPage() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
@@ -56,10 +66,15 @@ export default function AgendamentoPage() {
   const [selectedRow, setSelectedRow] = useState<Appointment | null>(null);
   const [openConfirm, setOpenConfirm] = useState(false);
 
+  // Agendamento
+  const [openConfirmAgendamento, setOpenConfirmAgendamento] = useState(false);
+  const [profissionalSelecionado, setProfissionalSelecionado] = useState<Profissional | null>(null);
+  const [horarioSelecionado, setHorarioSelecionado] = useState<string>("");
+  const [selectedDate, setSelectedDate] = useState(dayjs());
+
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
-  // Pegue token e meiId do localStorage ou contexto
   const token = localStorage.getItem("token") || "";
   const meiId = Number(localStorage.getItem("meiId")) || 0;
 
@@ -91,16 +106,34 @@ export default function AgendamentoPage() {
     setOpenConfirm(false);
   };
 
+  const handleAgendar = () => {
+    console.log("Agendamento confirmado com:");
+    console.log("Profissional:", profissionalSelecionado);
+    console.log("Data:", selectedDate.format("YYYY-MM-DD"));
+    console.log("Hora:", horarioSelecionado);
+    setOpenConfirmAgendamento(false);
+  };
+
   return (
     <Box p={isSmallScreen ? 2 : 4}>
-      {/* <ModalAgendamento onClose={() => setModalOpen(false)} open={modalOpen} /> */}
-      {/* <ModalConfirmarCancelamento
+      <ModalConfirmarCancelamento
         open={openConfirm}
         onClose={() => setOpenConfirm(false)}
         onConfirm={handleConfirmCancel}
         servico={selectedRow?.service?.name || ""}
         hora={selectedRow?.scheduledAt || ""}
-      /> */}
+      />
+
+      <ModalConfirmarAgendamento
+        open={openConfirmAgendamento}
+        onClose={() => setOpenConfirmAgendamento(false)}
+        onConfirm={handleAgendar}
+        profissional={profissionalSelecionado?.nome || ""}
+        servico={profissionalSelecionado?.funcao || ""}
+        local={profissionalSelecionado?.local || ""}
+        data={selectedDate?.format("DD/MM/YYYY") || ""}
+        hora={horarioSelecionado}
+      />
 
       <Box mb={3}>
         <Typography variant="h4" fontWeight="bold">
@@ -138,7 +171,16 @@ export default function AgendamentoPage() {
             size="large"
             fullWidth={isSmallScreen}
             startIcon={<AddIcon />}
-            onClick={() => setModalOpen(true)}
+            onClick={() => {
+              setProfissionalSelecionado({
+                nome: "Ana Souza",
+                funcao: "Fisioterapeuta",
+                local: "Clínica Vida Saudável - Sala 3",
+              });
+              setHorarioSelecionado("14:00");
+              setSelectedDate(dayjs());
+              setOpenConfirmAgendamento(true);
+            }}
           >
             {!isSmallScreen && "Novo Agendamento"}
           </Button>
