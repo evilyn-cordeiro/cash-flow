@@ -1,0 +1,14 @@
+FROM node:20
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+
+# Copia todo o código, incluindo a pasta prisma
+COPY . .
+
+# Gera o client do Prisma (precisa do schema.prisma dentro do container)
+RUN npx prisma generate
+
+CMD ["npm", "run", "dev"]

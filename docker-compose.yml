@@ -2,18 +2,31 @@ version: '3.8'
 
 services:
   backend:
-    build: ./back-end
+    build:
+      context: ./back-end
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./back-end:/app
+      - /app/node_modules
     ports:
       - "3000:3000"
     env_file:
       - ./back-end/.env
+    command: npm run dev
     depends_on:
       - db
 
   frontend:
-    build: ./front-end
+    build:
+      context: ./front-end
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./front-end:/app
+      - /app/node_modules
+    working_dir: /app
     ports:
-      - "5173:80"  # 5173 para Vite; use 3001 para CRA
+      - "5173:5173"
+    command: npm run dev
     depends_on:
       - backend
 
@@ -22,6 +35,6 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: cash_flow
+      POSTGRES_DB: cash-flow-db-1
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: 123456

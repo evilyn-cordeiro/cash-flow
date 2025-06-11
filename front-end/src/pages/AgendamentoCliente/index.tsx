@@ -21,42 +21,64 @@ import {
 import FilterListIcon from "@mui/icons-material/FilterList";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import AddIcon from "@mui/icons-material/Add";
-import { ModalAgendamento } from "./ModalAgendamento";
-import { ModalConfirmarCancelamento } from "./ModalCancelamento";
-import { getMyAppointments } from "../services/appointmentService";
+import { getMyAppointments } from "../../services/appointmentService";
 
-const statusColors = {
-  Pendente: "warning",
-  Confirmado: "success",
-  Cancelado: "error",
+const statusColors: Record<string, "default" | "primary" | "secondary" | "error" | "info" | "success" | "warning"> = {
+  PENDING: "warning",
+  CONFIRMED: "success",
+  CANCELLED: "error",
+  COMPLETED: "default",
 };
 
+interface Appointment {
+  id: number;
+  scheduledAt: string;
+  status: string;
+  notes?: string;
+  service: {
+    id: number;
+    name: string;
+    mei: {
+      id: number;
+      name: string;
+    };
+  };
+  customer: {
+    id: number;
+    name: string;
+  };
+}
+
 export default function AgendamentoPage() {
-  const [appointments, setAppointments] = useState([]);
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedRow, setSelectedRow] = useState<any>(null);
+  const [selectedRow, setSelectedRow] = useState<Appointment | null>(null);
   const [openConfirm, setOpenConfirm] = useState(false);
 
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-  const token = localStorage.getItem("token");
+
+  // Pegue token e meiId do localStorage ou contexto
+  const token = localStorage.getItem("token") || "";
+  const meiId = Number(localStorage.getItem("meiId")) || 0;
 
   useEffect(() => {
-    if (token) {
+    if (token && meiId) {
       getMyAppointments(token)
-        .then(setAppointments)
+        .then((data) => setAppointments(data as Appointment[]))
         .catch((err) => console.error("Erro ao carregar agendamentos:", err));
     }
-  }, [token]);
+  }, [token, meiId]);
 
-  const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>, row: any) => {
+  const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>, row: Appointment) => {
     setAnchorEl(event.currentTarget);
     setSelectedRow(row);
   };
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+    setSelectedRow(null);
   };
 
   const handleCancelClick = () => {
@@ -71,21 +93,21 @@ export default function AgendamentoPage() {
 
   return (
     <Box p={isSmallScreen ? 2 : 4}>
-      <ModalAgendamento onClose={() => setModalOpen(false)} open={modalOpen} />
-      <ModalConfirmarCancelamento
+      {/* <ModalAgendamento onClose={() => setModalOpen(false)} open={modalOpen} /> */}
+      {/* <ModalConfirmarCancelamento
         open={openConfirm}
         onClose={() => setOpenConfirm(false)}
         onConfirm={handleConfirmCancel}
         servico={selectedRow?.service?.name || ""}
-        hora={selectedRow?.dateTime || ""}
-      />
+        hora={selectedRow?.scheduledAt || ""}
+      /> */}
 
       <Box mb={3}>
         <Typography variant="h4" fontWeight="bold">
-          Agendamento
+          Agendamentos
         </Typography>
         <Typography color="text.secondary">
-          Gerenciamento de agendamento
+          Gerenciamento de agendamentos
         </Typography>
       </Box>
 
@@ -140,11 +162,11 @@ export default function AgendamentoPage() {
                 <TableCell>{row.service?.name}</TableCell>
                 {!isSmallScreen && (
                   <TableCell>
-                    {new Date(row.dateTime).toLocaleString("pt-BR")}
+                    {new Date(row.scheduledAt).toLocaleString("pt-BR")}
                   </TableCell>
                 )}
                 {!isSmallScreen && (
-                  <TableCell>{row.mei?.name || "Não informado"}</TableCell>
+                  <TableCell>{row.service?.mei?.name || "Não informado"}</TableCell>
                 )}
                 <TableCell>
                   <Chip

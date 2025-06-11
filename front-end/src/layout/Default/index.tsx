@@ -18,22 +18,16 @@ const drawerWidth = 240;
 
 const menuItems = [
   {
-    text: "Início",
+    text: "Controle Financeiro",
     icon: <Home />,
-    path: "/",
+    path: "/controle-financeiro",
     rule: ["MEI"],
   },
   {
     text: "Agendamentos",
-    icon: <CalendarMonth />,
+    icon: <Home />,
     path: "/agendamento",
     rule: ["Customer"],
-  },
-  {
-    text: "Controle Financeiro",
-    icon: <MoneyOutlined />,
-    path: "/controle-financeiro",
-    rule: ["MEI"],
   },
 ];
 
