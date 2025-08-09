@@ -4,7 +4,7 @@ import { useSnackbar } from "notistack";
 import { Box, Button, Typography } from "@mui/material";
 import { FormInput } from "../../components";
 import { login } from "../../services/userAuthService";
-import { useAuth } from "../../utils/authContext"; // Importando o contexto
+import { useAuth } from "../../utils/authContext";
 
 const Login = () => {
   const { login: loginContext } = useAuth();
@@ -55,7 +55,7 @@ const Login = () => {
           flex: 1,
           display: { xs: "none", md: "block" },
           backgroundImage:
-            'url("https://conteudo.solutudo.com.br/wp-content/uploads/2020/01/BARBEARIA-ARACAJU-BARBEIRO-MESTRE.png")',
+            'url("https://www.cescontab.com/wp-content/uploads/2023/02/empreendedorismo-digital-como-empreender.jpg")',
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}

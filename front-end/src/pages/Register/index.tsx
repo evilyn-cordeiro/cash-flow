@@ -54,7 +54,7 @@ const Register = () => {
           flex: 1,
           display: { xs: "none", md: "block" },
           backgroundImage:
-            'url("https://down-br.img.susercontent.com/file/f928d5a321f4af25cf82023612883867")',
+            'url("https://wallpaperbat.com/img/680975-download-wallpaper-finance-concepts-charts-background-with-graphs-stock-exchanges-money-business-concepts-finance-for-desktop-with-resolution-2560x1600-high-quality-hd-picture-wallpaper.jpg")',
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
